@@ -770,7 +770,7 @@ document.addEventListener('change',e=>{
 });
 
 // ── FORM SUBMIT ───────────────────────────────────────────────────────────
-function sub(e,id){
+async function sub(e,id){
   e.preventDefault();
   const form=document.getElementById(id);
   let ok=true;
@@ -822,30 +822,36 @@ function sub(e,id){
   if(typeof gtag!=='undefined')gtag('event','generate_lead');
   var _loc=document.getElementById('f-location'),_model=document.getElementById('f-model'),_extra=document.getElementById('f-extra');
   var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":"Contact", "time":"12:00", "date":"2026-06-27", "buying_time_frame":"ASAP"};
-  var access_token=document.getElementById('txtOrbyoToken')?document.getElementById('txtOrbyoToken').value:'';
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     const t=document.getElementById('toast');t.classList.add('on');
     setTimeout(()=>t.classList.remove('on'),5000);
     setTimeout(()=>{btn.textContent=origTxt;btn.style.background='';btn.disabled=false;form.reset();},3500);
   }
-  if(typeof orbyo!=='undefined'&&access_token){
-    orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
-      .withOrbyo('CABINET')
-      .withMode('contact us')
-      .withMobile(document.getElementById('f-mobile')?document.getElementById('f-mobile').value:'')
-      .withEmail(document.getElementById('f-email')?document.getElementById('f-email').value:'')
-      .withUserComment(_extra?_extra.value:'')
-      .withCustomValues(custom_values)
-      .submit(access_token,function(status,msg){
-        if(status==true){_showSuccess();}
-        else{console.error('Lead submission failed: ',msg);btn.textContent=origTxt;btn.disabled=false;}
-      });
+  if(typeof orbyo!=='undefined'){
+    try{
+      const tokenResponse=await fetch('/leadAccessToken.php');
+      const access_token=(await tokenResponse.text()).trim();
+      orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
+        .withOrbyo('CABINET')
+        .withMode('contact us')
+        .withMobile(document.getElementById('f-mobile')?document.getElementById('f-mobile').value:'')
+        .withEmail(document.getElementById('f-email')?document.getElementById('f-email').value:'')
+        .withUserComment(_extra?_extra.value:'')
+        .withCustomValues(custom_values)
+        .submit(access_token,function(status,msg){
+          if(status==true){_showSuccess();}
+          else{console.error('Lead submission failed: ',msg);btn.textContent=origTxt;btn.disabled=false;}
+        });
+    }catch(err){
+      console.error('Failed to fetch token: ',err);
+      btn.textContent=origTxt;btn.disabled=false;
+    }
   } else {
     setTimeout(_showSuccess,1400);
   }
 }
 </script>
-<?php include($_SERVER['DOCUMENT_ROOT'] . "/leadAccessToken.php");?><input type="hidden" id="txtOrbyoToken" value="<?php echo $oauthToken;?>"/><script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script type="text/javascript" src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script type="text/javascript" src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
 </body>
 </html>
