@@ -809,8 +809,10 @@ async function sub(e,id){
   }
   if(typeof orbyo!=='undefined'){
     try{
-      const tokenResponse=await fetch('/leadAccessToken.php');
-      const access_token=(await tokenResponse.text()).trim();
+      const tokenResponse=await fetch('/api/getOrbyoToken');
+      if(!tokenResponse.ok) throw new Error('Failed to get token from Vercel API');
+      const tokenData=await tokenResponse.json();
+      const access_token=tokenData.token;
       orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
         .withOrbyo('CABINET')
         .withMode('contact us')
