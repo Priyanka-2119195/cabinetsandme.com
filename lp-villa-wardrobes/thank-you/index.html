@@ -113,5 +113,14 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     <p class="ty-note">We honor your space. Our team will only interact with you inside our dedicated WhatsApp thread.</p>
   </div>
 </div>
+<script>
+(function(){
+  var url=sessionStorage.getItem('pendingWaUrl');
+  if(url){
+    sessionStorage.removeItem('pendingWaUrl');
+    setTimeout(function(){ window.location.href=url; },5000);
+  }
+})();
+</script>
 </body>
 </html>

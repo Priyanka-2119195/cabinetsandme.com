@@ -191,5 +191,14 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   </div>
 
 </div>
+<script>
+(function(){
+  var url=sessionStorage.getItem('pendingWaUrl');
+  if(url){
+    sessionStorage.removeItem('pendingWaUrl');
+    setTimeout(function(){ window.location.href=url; },5000);
+  }
+})();
+</script>
 </body>
 </html>

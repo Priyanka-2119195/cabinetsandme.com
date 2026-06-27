@@ -833,7 +833,7 @@ async function sub(e,id){
   if(_loc&&_loc.value)_waLines.push('Location: '+_loc.value);
   if(_model&&_model.value)_waLines.push('Interest: '+_model.value);
   if(_extra&&_extra.value)_waLines.push('Details: '+_extra.value);
-  window.open('https://wa.me/919731100913?text='+encodeURIComponent(_waLines.join('\n')),'_blank');
+  try{sessionStorage.setItem('pendingWaUrl','https://wa.me/919731100913?text='+encodeURIComponent(_waLines.join('\n')));}catch(e){}
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     window.location.href='/lp-villa-kitchen/thank-you';
