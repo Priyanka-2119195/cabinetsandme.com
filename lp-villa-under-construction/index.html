@@ -806,10 +806,10 @@ async function sub(e,id){
   if(_loc&&_loc.value)_waLines.push('Location: '+_loc.value);
   if(_model&&_model.value)_waLines.push('Interest: '+_model.value);
   if(_extra&&_extra.value)_waLines.push('Details: '+_extra.value);
-  try{sessionStorage.setItem('pendingWaUrl','https://wa.me/919731100913?text='+encodeURIComponent(_waLines.join('\n')));}catch(e){}
+  var _pendingWaUrl='https://wa.me/919731100913?text='+encodeURIComponent(_waLines.join('\n'));
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-    window.location.href='/lp-villa-under-construction/thank-you';
+    window.location.href='/lp-villa-under-construction/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
   }
   if(typeof orbyo!=='undefined'){
     try{
