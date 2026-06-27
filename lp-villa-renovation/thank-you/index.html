@@ -87,13 +87,32 @@ var element=document.getElementsByTagName("script");element=element[element.leng
       <span class="ty-wa-body"><span class="ty-wa-label">Start Your Design Journey</span><span class="ty-wa-sub">Tap to message us on WhatsApp</span></span>
       <span class="ty-wa-arr">→</span>
     </a>
+    <div id="ty-countdown" style="display:none;margin-top:20px;padding:14px 20px;border:1px solid var(--border-t);background:var(--teal-xl);text-align:center;">
+      <p style="font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin:0;">
+        Opening WhatsApp in &nbsp;<span id="ty-count" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;font-weight:400;color:var(--gold-dark);line-height:1;">3</span>&nbsp; seconds
+      </p>
+      <div id="ty-bar-wrap" style="margin-top:10px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;">
+        <div id="ty-bar" style="height:100%;width:100%;background:var(--gold);transform-origin:left;transition:width 1s linear;"></div>
+      </div>
+    </div>
     <p class="ty-note">We honor your space. Our team will only interact with you inside our dedicated WhatsApp thread.</p>
   </div>
 </div>
 <script>
 (function(){
   var url=new URLSearchParams(window.location.search).get('wa');
-  if(url){setTimeout(function(){ window.location.href=url; },3000);}
+  if(!url)return;
+  var countEl=document.getElementById('ty-count');
+  var wrapEl=document.getElementById('ty-countdown');
+  var barEl=document.getElementById('ty-bar');
+  if(wrapEl)wrapEl.style.display='block';
+  requestAnimationFrame(function(){if(barEl)barEl.style.width='0%';});
+  var secs=3;
+  var timer=setInterval(function(){
+    secs--;
+    if(countEl)countEl.textContent=secs;
+    if(secs<=0){clearInterval(timer);window.location.href=url;}
+  },1000);
 })();
 </script>
 </body>
