@@ -681,6 +681,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
 
 <script>
 (function(){var p=new URLSearchParams(window.location.search);var g=document.getElementById('f-gclid');if(g)g.value=p.get('gclid')||'';var l=document.getElementById('f-pagelink');if(l)l.value=window.location.href;})();
+var _cachedToken=null;fetch('/api/getOrbyoToken').then(function(r){return r.json();}).then(function(d){_cachedToken=d.token;}).catch(function(){});
 // Scroll reveal
 const io = new IntersectionObserver(e => e.forEach(x => {
   if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}
@@ -809,14 +810,12 @@ async function sub(e,id){
   var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":_extra?_extra.value:'', "buying_time_frame":_extra?_extra.value:'', "gclid":_gclid?_gclid.value:'', "page_link":_pagelink?_pagelink.value:''};
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-    setTimeout(()=>{ window.location.href='/lp-villa-recent-possession/thank-you'; },1000);
+    setTimeout(()=>{ window.location.href='/lp-villa-recent-possession/thank-you'; },300);
   }
   if(typeof orbyo!=='undefined'){
     try{
-      const tokenResponse=await fetch('/api/getOrbyoToken');
-      if(!tokenResponse.ok) throw new Error('Failed to get token from Vercel API');
-      const tokenData=await tokenResponse.json();
-      const access_token=tokenData.token;
+      const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
+      if(!access_token) throw new Error('Failed to get token from Vercel API');
       orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
         .withOrbyo('CABINET')
         .withMode('villa recent possession')
