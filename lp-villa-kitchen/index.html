@@ -828,7 +828,7 @@ async function sub(e,id){
   var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":_extra?_extra.value:'', "buying_time_frame":_extra?_extra.value:'', "gclid":_gclid?_gclid.value:'', "page_link":_pagelink?_pagelink.value:''};
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-    setTimeout(()=>{ window.location.href='/lp-villa-kitchen/thank-you'; },300);
+    window.location.href='/lp-villa-kitchen/thank-you';
   }
   if(typeof orbyo!=='undefined'){
     try{
@@ -842,15 +842,15 @@ async function sub(e,id){
         .withUserComment(_extra?_extra.value:'')
         .withCustomValues(custom_values)
         .submit(access_token,function(status,msg){
-          if(status==true){_showSuccess();}
-          else{console.error('Lead submission failed: ',msg);btn.textContent=origTxt;btn.disabled=false;}
+          if(!status)console.error('Lead submission failed: ',msg);
         });
+      _showSuccess();
     }catch(err){
       console.error('Failed to fetch token: ',err);
-      btn.textContent=origTxt;btn.disabled=false;
+      _showSuccess();
     }
   } else {
-    setTimeout(_showSuccess,1400);
+    _showSuccess();
   }
 }
 </script>
