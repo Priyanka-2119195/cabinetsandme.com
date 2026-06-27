@@ -845,9 +845,10 @@ async function sub(e,id){
         .withUserComment(_extra?_extra.value:'')
         .withCustomValues(custom_values)
         .submit(access_token,function(status,msg){
+          console.log('Orbyo wardrobes response — status:',status,'msg:',msg);
           if(!status)console.error('Lead submission failed: ',msg);
         });
-      _showSuccess();
+      setTimeout(_showSuccess, 1500);
     }catch(err){
       console.error('Failed to fetch token: ',err);
       _showSuccess();
