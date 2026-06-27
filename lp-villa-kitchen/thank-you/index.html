@@ -62,31 +62,30 @@ img{display:block;max-width:100%;}
 /* ── RIGHT: CONTENT PANEL ── */
 .ty-content{
   display:flex;flex-direction:column;justify-content:center;
-  padding:64px 60px;background:var(--white);position:relative;overflow-y:auto;
+  padding:110px 52px 48px;background:var(--white);position:relative;overflow-y:auto;
 }
-.ty-logo-wrap{position:absolute;top:36px;left:60px;right:60px;display:flex;align-items:center;justify-content:space-between;}
-.ty-logo-wrap img{height:48px;}
+.ty-logo-wrap{position:absolute;top:36px;left:52px;right:52px;display:flex;align-items:center;justify-content:space-between;}
+.ty-logo-wrap img{height:44px;}
 .ty-cert{font-size:.52rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-light);border:1px solid var(--border);padding:5px 10px;}
-.ty-thanks{font-family:var(--serif);font-size:clamp(4rem,6.5vw,6.5rem);font-weight:300;color:var(--teal-dark);line-height:1;letter-spacing:-.02em;margin-bottom:14px;}
 
 .ty-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:.54rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--gold-dark);margin-bottom:12px;
+  display:block;
+  font-size:.52rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold-dark);margin-bottom:14px;
 }
-.ty-eyebrow::before{content:'';width:20px;height:1.5px;background:var(--gold);flex-shrink:0;}
+.ty-eyebrow::before{display:none;}
 
 .ty-heading{
-  font-family:var(--serif);font-size:clamp(2.2rem,3.5vw,3.2rem);font-weight:300;
-  line-height:1.1;color:var(--teal-dark);margin-bottom:22px;
+  font-family:var(--serif);font-size:clamp(2.6rem,4vw,3.8rem);font-weight:300;
+  line-height:1.1;color:var(--teal-dark);margin-bottom:18px;
 }
 .ty-heading em{font-style:italic;color:var(--teal-mid);display:block;}
 
-.ty-rule{width:44px;height:1px;background:var(--gold);margin-bottom:26px;}
+.ty-rule{width:44px;height:1px;background:var(--gold);margin-bottom:16px;}
 
 .ty-text{
-  font-size:.9rem;font-weight:300;color:var(--text-mid);
-  line-height:2;max-width:370px;margin-bottom:40px;
+  font-size:.86rem;font-weight:300;color:var(--text-mid);
+  line-height:1.75;max-width:360px;margin-bottom:20px;
 }
 
 /* ── WHATSAPP CTA ── */
@@ -122,8 +121,8 @@ img{display:block;max-width:100%;}
 
 /* ── FOOTER NOTE ── */
 .ty-note{
-  margin-top:32px;padding-top:24px;border-top:1px solid var(--border);
-  font-size:.62rem;color:var(--text-light);line-height:1.8;max-width:370px;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--border);
+  font-size:.62rem;color:var(--text-light);line-height:1.8;max-width:360px;
 }
 
 /* ── MOBILE ── */
@@ -131,7 +130,7 @@ img{display:block;max-width:100%;}
   .ty-wrap{grid-template-columns:1fr;grid-template-rows:46vh 1fr;}
   .ty-img{min-height:46vh;}
   .ty-img-footer{padding:32px 28px;}
-  .ty-content{padding:72px 28px 48px;}
+  .ty-content{padding:100px 28px 40px;}
   .ty-logo-wrap{left:28px;right:28px;}
   .ty-text{max-width:100%;}
   .ty-wa{max-width:100%;}
@@ -175,9 +174,9 @@ var element=document.getElementsByTagName("script");element=element[element.leng
       <span class="ty-cert">LGA Certified</span>
     </div>
 
-    <div class="ty-eyebrow"><span style="font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:.04em;font-weight:300;color:var(--teal-mid);font-size:.82rem;">thank you</span> &nbsp;·&nbsp; VILLA INTERIOR REQUEST CONFIRMED</div>
-    <h1 class="ty-heading">The Right Home<em>Deserves the Right Beginning.</em></h1>
+    <h1 class="ty-heading">Thank You for<em>Submitting Your Details.</em></h1>
     <div class="ty-rule"></div>
+    <div class="ty-eyebrow">VILLA INTERIOR REQUEST CONFIRMED</div>
     <p class="ty-text">We do not reach out uninvited. Message us on WhatsApp when you're ready.</p>
 
     <a href="https://wa.me/919164711696?text=Hi%2C%20I%27ve%20been%20looking%20at%20Cabinets%20%26%20Me%20for%20my%20villa%20kitchen%20in%20Bengaluru.%20I%27m%20ready%20to%20take%20this%20forward%20%E2%80%94%20when%20is%20a%20good%20time%20to%20connect%3F" class="ty-wa" target="_blank" rel="noopener">
