@@ -800,7 +800,7 @@ async function sub(e,id){
   if(typeof fbq!=='undefined')fbq('track','Lead');
   if(typeof gtag!=='undefined')gtag('event','generate_lead');
   var _loc=document.getElementById('f-location'),_model=document.getElementById('f-model'),_extra=document.getElementById('f-extra');
-  var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":"Contact", "time":"12:00", "date":"2026-06-27", "buying_time_frame":"ASAP"};
+  var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":_extra?_extra.value:'', "buying_time_frame":_extra?_extra.value:''};
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     const t=document.getElementById('toast');t.classList.add('on');
