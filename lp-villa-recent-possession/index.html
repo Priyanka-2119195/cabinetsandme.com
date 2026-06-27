@@ -806,7 +806,7 @@ async function sub(e,id){
   var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":_extra?_extra.value:'', "buying_time_frame":_extra?_extra.value:''};
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-    setTimeout(()=>{ window.location.href='./thank-you'; },1000);
+    setTimeout(()=>{ window.location.href='/lp-villa-recent-possession/thank-you'; },1000);
   }
   if(typeof orbyo!=='undefined'){
     try{
