@@ -692,6 +692,10 @@ var element=document.getElementsByTagName("script");element=element[element.leng
 
 <script>
 (function(){var p=new URLSearchParams(window.location.search);var g=document.getElementById('f-gclid');if(g)g.value=p.get('gclid')||'';var l=document.getElementById('f-pagelink');if(l)l.value=window.location.href;var s=document.getElementById('f-utm-source');if(s)s.value=p.get('utm_source')||'';var m=document.getElementById('f-utm-medium');if(m)m.value=p.get('utm_medium')||'';})();
+var _urlParams=new URLSearchParams(window.location.search);
+function detectSource(p){var med=(p.get('utm_medium')||'').toLowerCase(),src=(p.get('utm_source')||'').toLowerCase();if(/display|remarketing/.test(med))return 'remarketing';if(p.get('fbclid')||/facebook|instagram|meta/.test(src))return 'meta';if(p.get('gclid')||/google/.test(src))return 'google';return 'website';}
+function generateWhatsAppMessage(opts){var mode=opts.mode||'visitor',project=opts.project||'',firstName=opts.firstName||'',source=opts.source||'website';var vO={google:'Hello. I was researching bespoke interior designers online when I came across Cabinets & Me.',meta:'Hello. I recently came across your work and was really impressed by what I saw.',remarketing:'Hello. I\'ve been seeing your work again recently, and it felt like the right time to reach out.',website:'Hello. I was browsing your website and wanted to learn more about your work.'};var lC={google:'I came across Cabinets & Me while researching bespoke interior designers online.',meta:'I recently came across your work and was really impressed.',remarketing:'I\'ve been seeing your work again recently, and it felt like the right time to reach out.',website:'I was browsing your website and decided to get in touch.'};var vP={kitchen:'I\'d love to know more about your bespoke villa kitchens.',wardrobes:'I\'d love to know more about your bespoke wardrobes.',apartment:'I\'d love to know more about your apartment interiors.',renovation:'I\'d love to know more about your villa renovation services.',underconstruction:'I\'d love to understand how we can begin planning the interiors before possession.',recentpossession:'I\'d love to discuss designing the interiors for my newly handed-over villa.'};var lP={kitchen:'I\'ve just submitted my enquiry for my bespoke villa kitchen.',wardrobes:'I\'ve just submitted my enquiry for my bespoke wardrobes.',apartment:'I\'ve just submitted my enquiry for my apartment interiors.',renovation:'I\'ve just submitted my enquiry regarding my villa renovation.',underconstruction:'I\'ve just submitted my enquiry for my upcoming villa interiors.',recentpossession:'I\'ve just submitted my enquiry for my newly handed-over villa.'};var s=(source in vO)?source:'website';if(mode==='visitor')return vO[s]+' '+(vP[project]||'');var g=firstName?'Hi, I\'m '+firstName+'.':'Hi.';return g+' '+(lP[project]||'')+' '+lC[s]+' I really liked your approach and would love to discuss how we can take this forward with your team.';}
+function buildWaUrl(msg){return 'https://wa.me/919164711696?text='+encodeURIComponent(msg);}
 var _cachedToken=null;fetch('/api/getOrbyoToken').then(function(r){return r.json();}).then(function(d){_cachedToken=d.token;}).catch(function(){});
 // Scroll reveal
 const io = new IntersectionObserver(e => e.forEach(x => {
@@ -818,24 +822,11 @@ async function sub(e,id){
   if(typeof fbq!=='undefined')fbq('track','Lead');
   if(typeof gtag!=='undefined')gtag('event','generate_lead',{'send_to':'G-ETE07PL3RP','transport_type':'beacon'});
   var _loc=document.getElementById('f-location'),_model=document.getElementById('f-model'),_extra=document.getElementById('f-extra'),_gclid=document.getElementById('f-gclid'),_pagelink=document.getElementById('f-pagelink'),_utmsource=document.getElementById('f-utm-source'),_utmmedium=document.getElementById('f-utm-medium');
-  var _qp=new URLSearchParams(window.location.search);
+  var _qp=_urlParams;
   var custom_values={"model":_model?_model.value:'', "location":_loc?_loc.value:'', "service":_extra?_extra.value:'', "buying_time_frame":_extra?_extra.value:'', "gclid":_gclid?_gclid.value:'', "page_link":_pagelink?_pagelink.value:'', "Source":_utmsource?_utmsource.value:'', "utm_medium":_utmmedium?_utmmedium.value:'', "utm_campaign":_qp.get('utm_campaign')||'', "utm_content":_qp.get('utm_content')||'', "utm_term":_qp.get('utm_term')||'', "fbclid":_qp.get('fbclid')||'', "adset":_qp.get('adset')||'', "ad":_qp.get('ad')||''};
   var _nm=document.getElementById('f-name'),_mb=document.getElementById('f-mobile'),_em=document.getElementById('f-email');
-  // Build source phrase from URL params — never expose ad or marketing terminology
-  var _src=(function(p){
-    var med=(p.get('utm_medium')||'').toLowerCase();
-    var src=(p.get('utm_source')||'').toLowerCase();
-    if(/display|remarketing/.test(med)) return 'after seeing your work again';
-    if(p.get('fbclid')||/facebook|instagram|meta/.test(src)) return 'after coming across Cabinets & Me recently';
-    if(p.get('gclid')||/google/.test(src)) return 'after discovering Cabinets & Me while exploring bespoke interior solutions online';
-    return 'through your website';
-  })(_qp);
-  // Compose personalised WhatsApp message using first name from submitted form
   var _fn=(_nm&&_nm.value.trim())?_nm.value.trim().split(/\s+/)[0]:'';
-  var _waMsg=(_fn?'Hi, I\'m '+_fn+'.':'Hi.')
-    +' I\'ve just submitted my enquiry for my bespoke wardrobes '+_src
-    +'. I really liked your approach and would love to discuss how we can take this forward with your team.';
-  var _pendingWaUrl='https://wa.me/919164711696?text='+encodeURIComponent(_waMsg);
+  var _pendingWaUrl=buildWaUrl(generateWhatsAppMessage({mode:'lead',project:'wardrobes',firstName:_fn,source:detectSource(_qp)}));
   function _showSuccess(){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     window.location.href='/lp-villa-wardrobes/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
@@ -865,6 +856,13 @@ async function sub(e,id){
     _showSuccess();
   }
 }
+// Set visitor WhatsApp button hrefs dynamically on page load
+(function(){
+  var _s=detectSource(_urlParams);
+  var _u=buildWaUrl(generateWhatsAppMessage({mode:'visitor',project:'wardrobes',source:_s}));
+  var _sb=document.querySelector('.stick-wa-btn');if(_sb)_sb.href=_u;
+  var _st=document.querySelector('#studio a.btn-outline');if(_st)_st.href=_u;
+})();
 </script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script type="text/javascript" src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
 </body>

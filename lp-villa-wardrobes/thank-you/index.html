@@ -135,6 +135,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
 (function(){
   var url=new URLSearchParams(window.location.search).get('wa');
   if(!url)return;
+  var waBtn=document.querySelector('.ty-wa');if(waBtn)waBtn.href=url;
   var countEl=document.getElementById('ty-count');
   var wrapEl=document.getElementById('ty-countdown');
   var barEl=document.getElementById('ty-bar');
