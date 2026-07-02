@@ -532,42 +532,67 @@ The main form handler. Called by `onsubmit="sub(event,'hform')"`.
    - Calls `_showSuccess()` which redirects to `thank-you?wa=<encoded-WA-url>`
    - If token fetch or Orbyo fails: still calls `_showSuccess()` (fail-safe)
 
-#### WhatsApp Message Generation
+#### Shared WhatsApp Message Generator
 
-Runs inside `sub()` immediately after `custom_values`. Uses `_qp` (already in scope).
+Three module-level functions are declared immediately after `_urlParams` in every LP script. They are identical across all 6 LP files.
 
-**Source phrase detection (priority order):**
-1. `utm_medium` matches `display` or `remarketing` → `"after seeing your work again"`
-2. `fbclid` present OR `utm_source` matches `facebook`/`instagram`/`meta` → `"after coming across Cabinets & Me recently"`
-3. `gclid` present OR `utm_source` matches `google` → `"after discovering Cabinets & Me while exploring bespoke interior solutions online"`
-4. Default → `"through your website"`
+**`detectSource(p)`** — takes a `URLSearchParams` object, returns one of four string tokens:
 
-| Source Detected | Customer-facing Phrase | Team Interpretation |
-|---|---|---|
-| Display / Remarketing | "…after seeing your work again" | Retargeting |
-| Meta | "…after coming across Cabinets & Me recently" | Facebook / Instagram |
-| Google Search | "…after discovering Cabinets & Me while exploring bespoke interior solutions online" | Google Search |
-| Website | "…through your website" | Direct / Organic |
-
-**Message format:**
-```
-Hi, I'm {firstName}. I've just submitted my enquiry for {projectWording} {sourcePhrase}. I really liked your approach and would love to discuss how we can take this forward with your team.
-```
-If name is absent: `"Hi."` instead of `"Hi, I'm {name}."`.
-First name is extracted from `f-name` value by splitting on whitespace and taking the first token.
-
-**Project wording per LP:**
-
-| LP | Project wording |
+| Return value | Trigger |
 |---|---|
-| Kitchen | `my bespoke villa kitchen` |
-| Wardrobes | `my bespoke wardrobes` |
-| Renovation | `my villa renovation` |
-| Under Construction | `my upcoming villa interiors` |
-| Recent Possession | `my newly handed-over villa` |
-| Apartment | `my apartment interiors` |
+| `'remarketing'` | `utm_medium` matches `display` or `remarketing` |
+| `'meta'` | `fbclid` present OR `utm_source` contains `facebook`/`instagram`/`meta` |
+| `'google'` | `gclid` present OR `utm_source` contains `google` |
+| `'website'` | default / direct |
 
-Marketing terminology (Google Ads, Meta, UTM, GCLID, FBCLID, campaign names) is never exposed in the message.
+**`generateWhatsAppMessage(opts)`** — takes `{mode, project, firstName, source}`, returns a plain-text message string.
+
+- `mode: 'visitor'` → source-specific opening sentence + project-specific prompt sentence. No name used.
+- `mode: 'lead'` → greeting (with first name if available) + project-specific sentence + source-specific continuation + standard closing.
+
+**Source sentences per mode:**
+
+| Source | Visitor opening | Lead continuation |
+|---|---|---|
+| `google` | "Hello. I was researching bespoke interior designers online when I came across Cabinets & Me." | "I came across Cabinets & Me while researching bespoke interior designers online." |
+| `meta` | "Hello. I recently came across your work and was really impressed by what I saw." | "I recently came across your work and was really impressed." |
+| `remarketing` | "Hello. I've been seeing your work again recently, and it felt like the right time to reach out." | "I've been seeing your work again recently, and it felt like the right time to reach out." |
+| `website` | "Hello. I was browsing your website and wanted to learn more about your work." | "I was browsing your website and decided to get in touch." |
+
+**Team interpretation of source values:**
+
+| Source Detected | Customer-facing phrase style | Team reads as |
+|---|---|---|
+| Display / Remarketing | "…seeing your work again…" | Retargeting |
+| Meta | "…recently came across your work…" | Facebook / Instagram |
+| Google Search | "…researching bespoke interior designers online…" | Google Search |
+| Website | "…browsing your website…" | Direct / Organic |
+
+**Project keys and their sentences:**
+
+| LP | `project` key | Visitor sentence | Lead sentence |
+|---|---|---|---|
+| Kitchen | `kitchen` | "I'd love to know more about your bespoke villa kitchens." | "I've just submitted my enquiry for my bespoke villa kitchen." |
+| Wardrobes | `wardrobes` | "I'd love to know more about your bespoke wardrobes." | "I've just submitted my enquiry for my bespoke wardrobes." |
+| Renovation | `renovation` | "I'd love to know more about your villa renovation services." | "I've just submitted my enquiry regarding my villa renovation." |
+| Under Construction | `underconstruction` | "I'd love to understand how we can begin planning the interiors before possession." | "I've just submitted my enquiry for my upcoming villa interiors." |
+| Recent Possession | `recentpossession` | "I'd love to discuss designing the interiors for my newly handed-over villa." | "I've just submitted my enquiry for my newly handed-over villa." |
+| Apartment | `apartment` | "I'd love to know more about your apartment interiors." | "I've just submitted my enquiry for my apartment interiors." |
+
+**`buildWaUrl(msg)`** — wraps a plain-text message into a `https://wa.me/919164711696?text=...` URL.
+
+**`_urlParams`** — module-level `URLSearchParams` parsed once on page load. Used by `detectSource()` and the page-load visitor IIFE. Inside `sub()`, `_qp` is aliased to `_urlParams` (no second parse).
+
+**How each WA touchpoint calls the generator:**
+
+| Touchpoint | Where | Call |
+|---|---|---|
+| Sticky bar button | Page-load IIFE at end of `<script>` | `generateWhatsAppMessage({mode:'visitor', project:'[key]', source:_s})` |
+| Studio "Chat on WhatsApp" button | Same page-load IIFE | same |
+| Form submission redirect | Inside `sub()` | `generateWhatsAppMessage({mode:'lead', project:'[key]', firstName:_fn, source:detectSource(_qp)})` |
+| Thank-you page WA button | TY page JS reads `?wa=` param, sets `.ty-wa` href | Inherits LP-generated URL via `?wa=` |
+
+Marketing terminology (Google Ads, Meta, UTM, GCLID, FBCLID, campaign names) is never exposed in any message.
 
 #### Orbyo API Call Chain (inside `sub()`)
 ```javascript
