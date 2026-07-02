@@ -542,6 +542,13 @@ Runs inside `sub()` immediately after `custom_values`. Uses `_qp` (already in sc
 3. `gclid` present OR `utm_source` matches `google` → `"after discovering Cabinets & Me while exploring bespoke interior solutions online"`
 4. Default → `"through your website"`
 
+| Source Detected | Customer-facing Phrase | Team Interpretation |
+|---|---|---|
+| Display / Remarketing | "…after seeing your work again" | Retargeting |
+| Meta | "…after coming across Cabinets & Me recently" | Facebook / Instagram |
+| Google Search | "…after discovering Cabinets & Me while exploring bespoke interior solutions online" | Google Search |
+| Website | "…through your website" | Direct / Organic |
+
 **Message format:**
 ```
 Hi, I'm {firstName}. I've just submitted my enquiry for {projectWording} {sourcePhrase}. I really liked your approach and would love to discuss how we can take this forward with your team.
@@ -1026,7 +1033,7 @@ Every LP page depends on (in order of loading):
    - Nav links (update anchor targets if adding/removing sections)
    - Nav CTA text
    - `f-model` and `f-extra` select options and labels
-   - WhatsApp pre-filled message (the `_waLines` array in `sub()`)
+   - Dynamic WhatsApp message generation (`_waMsg`) and the project wording/source phrase mappings inside `sub()`
    - `.withMode('your-mode')` in the Orbyo submit chain
    - Hero background image URL (`.hero-bg` inline style)
    - Mosaic images and captions
@@ -1139,7 +1146,7 @@ Instructions for any AI assistant working on this project:
 | Edit Orbyo credentials | `api/getOrbyoToken.js` | `clientDetails` object |
 | Edit GA4 tracking ID | All pages | `G-ETE07PL3RP` in `<head>` |
 | Edit Meta Pixel ID | All pages | `1422274186613862` in `<head>` |
-| Edit WhatsApp message (LP) | `lp-[name]/index.html` | `_waLines` array in `sub()` function |
+| Edit WhatsApp message (LP) | `lp-[name]/index.html` | `sub()` function → edit `_waMsg` template, project wording and `_src` source phrase mapping |
 | Edit WhatsApp message (TY) | `lp-[name]/thank-you/index.html` | `href` on `.ty-wa` anchor |
 | Edit thank-you page quote | `lp-[name]/thank-you/index.html` | `.ty-img-quote` inside `.ty-img-footer` |
 | Edit thank-you background image | `lp-[name]/thank-you/index.html` | `.ty-img-bg` background in `<style>` |
