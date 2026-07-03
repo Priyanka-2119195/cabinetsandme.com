@@ -40,7 +40,7 @@
   --border-t:   rgba(13,95,107,.12);
   --text:       #1C1C1C;
   --text-mid:   #555;
-  --text-light: #888;
+  --text-light: #6b6b6b;
   --serif:      'Cormorant Garamond', Georgia, serif;
   --sans:       'DM Sans', -apple-system, sans-serif;
   --shadow-sm:  0 2px 12px rgba(13,95,107,.06);
@@ -61,7 +61,7 @@ a{text-decoration:none;color:inherit;}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
 
 /* ── NAV ────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:72px;transition:box-shadow .3s;}
+nav{position:fixed;top:0;left:0;right:0;z-index:850;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:72px;transition:box-shadow .3s;}
 nav.scrolled{box-shadow:var(--shadow-md);}
 .nav-logo img{height:40px;}
 .nav-links{display:flex;gap:0;list-style:none;border-left:1px solid var(--border);}
@@ -69,7 +69,12 @@ nav.scrolled{box-shadow:var(--shadow-md);}
 .nav-links li a:hover{color:var(--teal);background:var(--teal-xl);}
 .nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:var(--white);font-size:.63rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:12px 24px;border:none;cursor:pointer;transition:background .2s;}
 .nav-cta:hover{background:var(--teal-dark);}
-.mob-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;}
+.mob-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--teal-dark);}
+.mob-btn.open{color:var(--white);}
+.mob-drawer{position:fixed;inset:0;height:100vh;height:100dvh;width:100vw;padding:0;z-index:800;background:var(--teal-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transform:translateY(-12px);transition:opacity .3s var(--ease,ease),transform .3s var(--ease,ease);}
+.mob-drawer.open{opacity:1;pointer-events:auto;transform:none;}
+.mob-drawer a{font-family:var(--serif);font-size:1.7rem;color:var(--white);}
+.mob-drawer .nav-cta{display:inline-flex;}
 
 /* ── HERO ───────────────────────────────────────────── */
 #hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 440px;align-items:stretch;padding-top:72px;overflow:hidden;background:var(--white);}
@@ -102,7 +107,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 .field select option{background:var(--white);}
 .field input:focus,.field select:focus{border-color:var(--teal);background:var(--white);box-shadow:0 0 0 3px rgba(13,95,107,.07);}
 .field input::placeholder{color:rgba(0,0,0,.28);}
-.submit-btn{width:100%;padding:15px;background:var(--teal);color:var(--white);font-family:var(--sans);font-size:.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;margin-top:4px;transition:background .2s,transform .1s;}
+.submit-btn{width:100%;padding:16px 15px;min-height:44px;background:var(--teal);color:var(--white);font-family:var(--sans);font-size:.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;border:none;cursor:pointer;margin-top:4px;transition:background .2s,transform .1s;}
 .submit-btn:hover{background:var(--teal-dark);}
 .submit-btn:active{transform:scale(.99);}
 .form-note{font-size:.6rem;color:var(--text-light);text-align:center;margin-top:11px;}
@@ -115,7 +120,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 #wiz-hero{position:relative;}
 .wiz-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;min-height:16px;}
 .wiz-step-count{font-size:.58rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--text-light);}
-.wiz-back{display:none;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:.6rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);padding:0;}
+.wiz-back{display:none;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:.6rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);padding:12px 4px;margin:-12px -4px;}
 .wiz-back.show{display:inline-flex;}
 .wiz-back svg{width:11px;height:11px;}
 .wiz-progress-track{height:3px;background:rgba(13,95,107,.12);border-radius:3px;margin-bottom:24px;overflow:hidden;}
@@ -140,7 +145,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 .wiz-card.sel .wiz-card-check{display:flex;}
 .wiz-card-check svg{width:9px;height:9px;color:var(--teal-dark);}
 .wiz-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
-.wiz-chip{position:relative;background:rgba(255,255,255,.46);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,.6);border-radius:30px;padding:11px 16px;font-size:.78rem;font-weight:500;color:var(--text);cursor:pointer;font-family:var(--sans);overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;}
+.wiz-chip{position:relative;min-height:44px;display:inline-flex;align-items:center;background:rgba(255,255,255,.46);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,.6);border-radius:30px;padding:11px 16px;font-size:.78rem;font-weight:500;color:var(--text);cursor:pointer;font-family:var(--sans);overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;}
 .wiz-chip:hover{border-color:rgba(255,255,255,.9);background:rgba(255,255,255,.7);transform:translateY(-2px);box-shadow:0 8px 20px rgba(13,95,107,.12);}
 .wiz-chip.sel{background:linear-gradient(135deg,rgba(13,95,107,.92),rgba(9,77,87,.96));color:var(--white);border-color:var(--gold);box-shadow:0 8px 22px rgba(13,95,107,.3),0 0 0 1px rgba(255,175,49,.45);animation:wizSelPulse .6s ease-out;}
 @keyframes wizSelPulse{0%{box-shadow:0 0 0 0 rgba(255,175,49,.55);}100%{box-shadow:0 0 0 16px rgba(255,175,49,0);}}
@@ -210,7 +215,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 .std-sub{font-size:.95rem;font-weight:300;color:var(--text-mid);max-width:620px;margin:0 auto;line-height:1.85;}
 .std-stats{background:var(--teal);padding:72px 52px;}
 .stats-row{display:grid;grid-template-columns:repeat(5,1fr);max-width:1200px;margin:0 auto;}
-.sstat{text-align:center;padding:0 16px;position:relative;}
+.sstat{text-align:center;padding:0 16px;position:relative;min-width:0;}
 .sstat+.sstat::before{content:'';position:absolute;left:0;top:12%;height:76%;width:1px;background:rgba(255,175,49,.3);}
 .sstat-n{display:block;font-family:var(--serif);font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:300;color:var(--white);line-height:1;letter-spacing:-.01em;margin-bottom:12px;}
 .sstat-n .g{color:var(--gold);}
@@ -389,8 +394,9 @@ footer{background:var(--teal-dark);padding:60px 52px 32px;}
 /* ── RESPONSIVE ──────────────────────────────────────── */
 @media(max-width:1080px){
   nav{padding:0 24px;}
+  #nav .nav-cta{display:none;}
   .nav-links{display:none;}
-  .mob-btn{display:flex;align-items:center;}
+  .mob-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;position:relative;z-index:900;}
   #hero{grid-template-columns:1fr;min-height:auto;}
   .hero-left{padding:64px 24px 32px;}
   .hero-left::after{display:none;}
@@ -414,7 +420,9 @@ footer{background:var(--teal-dark);padding:60px 52px 32px;}
   .foot-grid{grid-template-columns:1fr;gap:36px;}
   #stick{padding:14px 20px;flex-wrap:nowrap;}
   .studio-inner{padding:72px 24px;max-width:100%;}
+  .std-stats{padding:56px 24px;}
   .stats-row{grid-template-columns:repeat(3,1fr);row-gap:44px;}
+  .sstat{padding:0 8px;}
   .sstat:nth-child(3)::before{display:none;}
   .sstat:nth-child(4){grid-column:2;}
   .sstat:nth-child(4)::before{display:none;}
@@ -426,7 +434,7 @@ footer{background:var(--teal-dark);padding:60px 52px 32px;}
   .stick-text{display:none;}
   .stick-right{width:100%;justify-content:space-between;gap:12px;align-items:center;}
   .stick-phone{font-size:.78rem;}
-  .stick-wa-btn{width:42px;height:42px;}
+  .stick-wa-btn{width:44px;height:44px;}
 }
 @media(max-width:680px){
   .port-grid{grid-template-columns:1fr;}
@@ -435,6 +443,7 @@ footer{background:var(--teal-dark);padding:60px 52px 32px;}
 @media(max-width:400px){
   .wiz-grid{grid-template-columns:1fr;}
   .wiz-card{min-height:auto;flex-direction:row;align-items:center;}
+  .sstat-n{font-size:clamp(1.5rem,7vw,2.4rem);}
 }
 </style>
 </head>
@@ -451,7 +460,15 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   <a href="#hero" class="nav-logo"><img src="https://static.wixstatic.com/media/e3b82d_5921d7d9eaaf4f6a97e1a12b94e8847c~mv2.png/v1/fill/w_214,h_58,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Cabinets-and-Me-logo-NO-Background.png" alt="Cabinets &amp; Me"></a>
   <ul class="nav-links"><li><a href="#portfolio">Projects</a></li><li><a href="#process">Process</a></li><li><a href="#faq">FAQs</a></li><li><a href="#studio">Studio</a></li></ul>
   <button class="nav-cta" onclick="document.getElementById('hform').scrollIntoView({behavior:'smooth'})">Schedule A Design Consultation</button>
-  <button class="mob-btn" aria-label="Menu"><svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M0 1h22M0 8h22M0 15h22" stroke="#094D57" stroke-width="1.5"/></svg></button>
+  <button class="mob-btn" id="mobBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobDrawer"><svg id="mobBtnIcon" width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M0 1h22M0 8h22M0 15h22" stroke="currentColor" stroke-width="1.5"/></svg></button>
+</nav>
+
+<nav class="mob-drawer" id="mobDrawer" aria-hidden="true">
+  <a href="#portfolio">Projects</a>
+  <a href="#process">Process</a>
+  <a href="#faq">FAQs</a>
+  <a href="#studio">Studio</a>
+  <button class="nav-cta" onclick="document.getElementById('hform').scrollIntoView({behavior:'smooth'})">Schedule A Design Consultation</button>
 </nav>
 
 <section id="hero">
@@ -528,9 +545,9 @@ var element=document.getElementsByTagName("script");element=element[element.leng
           <h3 class="wiz-q">Almost there — <em>where do we send it?</em></h3>
           <p class="wiz-sub">Your design consultation, confirmed in minutes.</p>
           <div class="wiz-contact">
-            <div class="field"><label>Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
-            <div class="field"><label>Mobile Number *</label><input type="tel" id="f-mobile" placeholder="+91 — — — — — — — — —" required><span class="field-error">Please enter a valid 10-digit Indian mobile number (starting with 6–9)</span></div>
-            <div class="field"><label>Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+            <div class="field"><label for="f-name">Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
+            <div class="field"><label for="f-mobile">Mobile Number *</label><input type="tel" id="f-mobile" placeholder="+91 — — — — — — — — —" required><span class="field-error">Please enter a valid 10-digit Indian mobile number (starting with 6–9)</span></div>
+            <div class="field"><label for="f-email">Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
           </div>
           <button type="submit" class="submit-btn">Schedule A Design Consultation</button>
         </div>
@@ -929,6 +946,29 @@ window.addEventListener('scroll',()=>{
   navEl.classList.toggle('scrolled',scrollY>60);
   stickEl.classList.toggle('on',scrollY>innerHeight*.65);
 });
+
+// Mobile menu drawer
+const mobBtn=document.getElementById('mobBtn'),mobDrawer=document.getElementById('mobDrawer'),mobBtnIcon=document.getElementById('mobBtnIcon');
+const ICON_MENU='<path d="M0 1h22M0 8h22M0 15h22" stroke="currentColor" stroke-width="1.5"/>';
+const ICON_CLOSE='<path d="M1 1l14 14M15 1L1 15" stroke="currentColor" stroke-width="1.5"/>';
+function closeMobDrawer(){
+  mobDrawer.classList.remove('open');
+  mobBtn.classList.remove('open');
+  mobBtn.setAttribute('aria-expanded','false');
+  mobBtn.setAttribute('aria-label','Open menu');
+  mobDrawer.setAttribute('aria-hidden','true');
+  mobBtnIcon.innerHTML=ICON_MENU;
+}
+mobBtn.addEventListener('click',()=>{
+  const open=mobDrawer.classList.toggle('open');
+  mobBtn.classList.toggle('open',open);
+  mobBtn.setAttribute('aria-expanded',open?'true':'false');
+  mobBtn.setAttribute('aria-label',open?'Close menu':'Open menu');
+  mobDrawer.setAttribute('aria-hidden',open?'false':'true');
+  mobBtnIcon.innerHTML=open?ICON_CLOSE:ICON_MENU;
+});
+mobDrawer.querySelectorAll('a,button').forEach(el=>el.addEventListener('click',closeMobDrawer));
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeMobDrawer(); });
 
 // FAQ accordion
 function faq(btn){
