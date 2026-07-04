@@ -12,16 +12,38 @@
 <script type="text/javascript" src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cabinets &amp; Me — Villa Landing Pages</title>
+<title>Cabinets &amp; Me — Landing Page Directory</title>
 <meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
-  body { font-family: sans-serif; max-width: 600px; margin: 60px auto; padding: 0 24px; color: #222; }
-  h1 { font-size: 1.25rem; margin-bottom: 8px; }
-  p { color: #666; margin-bottom: 32px; font-size: 0.9rem; }
-  ul { list-style: none; padding: 0; }
-  li { margin-bottom: 12px; }
-  a { color: #0D5F6B; text-decoration: none; font-size: 0.95rem; }
-  a:hover { text-decoration: underline; }
+:root{
+  --teal:#0D5F6B;--teal-dark:#094D57;--teal-deep:#063540;--teal-mid:#1a7a88;--teal-xl:#F4FAFB;
+  --gold:#FFAF31;--gold-dark:#D9911A;--white:#FFFFFF;--warm:#F7F5F1;--border:#E8E8E8;
+  --text:#1C1C1C;--text-mid:#555;--text-light:#6b6b6b;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'DM Sans',-apple-system,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);font-weight:300;background:var(--warm);color:var(--text);line-height:1.6;padding:64px 24px 80px;}
+a{text-decoration:none;color:inherit;}
+.wrap{max-width:920px;margin:0 auto;}
+.hd{margin-bottom:56px;}
+.hd-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.62rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:16px;}
+.hd-eyebrow::before{content:'';width:22px;height:2px;background:var(--gold);}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,4vw,2.6rem);color:var(--teal-dark);margin-bottom:10px;}
+h1 em{font-style:italic;color:var(--teal-mid);}
+.hd-sub{font-size:.88rem;color:var(--text-mid);max-width:520px;}
+.grp{margin-bottom:44px;}
+.grp-label{font-size:.62rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);padding-bottom:12px;margin-bottom:20px;border-bottom:1px solid var(--border);}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.card{background:var(--white);border:1px solid var(--border);border-left:3px solid transparent;padding:24px 26px;display:flex;flex-direction:column;gap:6px;transition:border-color .25s,box-shadow .25s,transform .25s;position:relative;overflow:hidden;}
+.card:hover{border-left-color:var(--gold);box-shadow:0 14px 34px rgba(6,53,64,.10);transform:translateY(-2px);}
+.card-name{font-family:var(--serif);font-size:1.2rem;font-weight:500;color:var(--teal-dark);}
+.card-title{font-size:.76rem;color:var(--text-light);line-height:1.6;}
+.card-path{font-size:.66rem;letter-spacing:.05em;color:var(--teal-mid);font-family:monospace;margin-top:6px;}
+.card-arrow{position:absolute;top:22px;right:22px;font-size:.9rem;color:var(--border);transition:transform .25s,color .25s;}
+.card:hover .card-arrow{transform:translate(3px,-3px);color:var(--gold-dark);}
+.note{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-light);}
+@media(max-width:640px){.cards{grid-template-columns:1fr;}body{padding:48px 18px 60px;}}
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -49,16 +71,75 @@ widgetParams.version=.1,widgetParams.widgetType="oa",iframe.style.cssText="heigh
 try{"undefined"!=typeof orbyoIntel&&"function"==typeof orbyoIntel.init?iframe.onload=orbyoIntel.init(iframe):console.error("orbyoIntel.min.js missing")}catch(a){console.error(a.message)}
 var element=document.getElementsByTagName("script");element=element[element.length-1],element.parentNode.insertBefore(iframe,element);
 //]]></script>
-<h1>Cabinets &amp; Me — Villa Landing Pages</h1>
-<p>Internal index. Not linked publicly.</p>
-<ul>
-  <li><a href="/lp-villa-kitchen">Villa Kitchen</a></li>
-  <li><a href="/lp-villa-wardrobes">Villa Wardrobes</a></li>
-  <li><a href="/lp-villa-renovation">Villa Renovation</a></li>
-  <li><a href="/lp-villa-under-construction">Villa Under Construction</a></li>
-  <li><a href="/lp-villa-recent-possession">Villa Recent Possession</a></li>
-  <li><a href="/lp-apartment-owners">Apartment Owners</a></li>
-  <li><a href="/lp-apartments-meta-01">Apartments — Meta Ads 01</a></li>
-</ul>
+
+<div class="wrap">
+  <div class="hd">
+    <div class="hd-eyebrow">Internal Directory &nbsp;·&nbsp; Not Linked Publicly</div>
+    <h1>Cabinets &amp; Me<br><em>Landing Page Directory.</em></h1>
+    <p class="hd-sub">All active campaign landing pages, grouped by audience. Each links straight to the live page.</p>
+  </div>
+
+  <div class="grp">
+    <div class="grp-label">Apartment Campaigns</div>
+    <div class="cards">
+      <a class="card" href="/lp-apartments-meta-01">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Apartments — Meta Ads</span>
+        <span class="card-title">Bespoke apartment interiors — kitchens, wardrobes &amp; living spaces</span>
+        <span class="card-path">/lp-apartments-meta-01</span>
+      </a>
+      <a class="card" href="/lp-apartments-kitchen">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Apartments — Kitchen</span>
+        <span class="card-title">Bespoke luxury kitchens for apartments &amp; villas alike</span>
+        <span class="card-path">/lp-apartments-kitchen</span>
+      </a>
+      <a class="card" href="/lp-apartment-owners">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Apartment Owners</span>
+        <span class="card-title">Turnkey interiors for existing apartment owners</span>
+        <span class="card-path">/lp-apartment-owners</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="grp-label">Villa Campaigns</div>
+    <div class="cards">
+      <a class="card" href="/lp-villa-kitchen">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Villa Kitchen</span>
+        <span class="card-title">Bespoke luxury kitchens for Bengaluru villas</span>
+        <span class="card-path">/lp-villa-kitchen</span>
+      </a>
+      <a class="card" href="/lp-villa-wardrobes">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Villa Wardrobes</span>
+        <span class="card-title">Bespoke walk-in wardrobes for Bengaluru villas</span>
+        <span class="card-path">/lp-villa-wardrobes</span>
+      </a>
+      <a class="card" href="/lp-villa-renovation">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Villa Renovation</span>
+        <span class="card-title">Full interior renovation for existing villas</span>
+        <span class="card-path">/lp-villa-renovation</span>
+      </a>
+      <a class="card" href="/lp-villa-under-construction">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Villa Under Construction</span>
+        <span class="card-title">Planning villa interiors before possession</span>
+        <span class="card-path">/lp-villa-under-construction</span>
+      </a>
+      <a class="card" href="/lp-villa-recent-possession">
+        <span class="card-arrow">→</span>
+        <span class="card-name">Villa Recent Possession</span>
+        <span class="card-title">Bespoke interiors for newly handed-over villas</span>
+        <span class="card-path">/lp-villa-recent-possession</span>
+      </a>
+    </div>
+  </div>
+
+  <p class="note">Internal index — noindex, nofollow. Add new campaign pages here as they go live.</p>
+</div>
 </body>
 </html>
