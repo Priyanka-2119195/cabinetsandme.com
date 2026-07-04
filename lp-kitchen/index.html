@@ -1328,10 +1328,10 @@ async function sub(e,id){
       var wizMeta=document.querySelector('#wiz-hero .wiz-meta'); if(wizMeta) wizMeta.style.display='none';
       var wizTrack=document.querySelector('#wiz-hero .wiz-progress-track'); if(wizTrack) wizTrack.style.display='none';
       var wizSuccess=document.getElementById('wiz-success'); if(wizSuccess) wizSuccess.classList.add('show');
-      setTimeout(function(){ window.location.href='/lp-apartments-kitchen/thank-you?wa='+encodeURIComponent(_pendingWaUrl); },1600);
+      setTimeout(function(){ window.location.href='/lp-kitchen/thank-you?wa='+encodeURIComponent(_pendingWaUrl); },1600);
     } else {
       btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-      window.location.href='/lp-apartments-kitchen/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
+      window.location.href='/lp-kitchen/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
     }
   }
   if(typeof orbyo!=='undefined'){
