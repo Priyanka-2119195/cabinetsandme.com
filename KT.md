@@ -554,10 +554,10 @@ Three module-level functions are declared immediately after `_urlParams` in ever
 
 | Source | Visitor opening | Lead continuation |
 |---|---|---|
-| `google` | "Hello. I was researching bespoke interior designers online when I came across Cabinets & Me." | "I came across Cabinets & Me while researching bespoke interior designers online." |
-| `meta` | "Hello. I recently came across your work and was really impressed by what I saw." | "I recently came across your work and was really impressed." |
-| `remarketing` | "Hello. I've been seeing your work again recently, and it felt like the right time to reach out." | "I've been seeing your work again recently, and it felt like the right time to reach out." |
-| `website` | "Hello. I was browsing your website and wanted to learn more about your work." | "I was browsing your website and decided to get in touch." |
+| `google` | "Hello. I'm reaching out after discovering Cabinets & Me while exploring bespoke interior solutions online." | "I reached out after discovering Cabinets & Me while exploring bespoke interior solutions online." |
+| `meta` | "Hello. I'm reaching out after coming across Cabinets & Me recently." | "I reached out after coming across Cabinets & Me recently." |
+| `remarketing` | "Hello. I'm reaching out after seeing your work again — it felt like the right time to connect." | "I reached out after seeing your work again." |
+| `website` | "Hello. I'm reaching out through your website and wanted to learn more about your work." | "I reached out through your website." |
 
 **Team interpretation of source values:**
 
