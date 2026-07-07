@@ -822,6 +822,8 @@ async function sub(e,id){
     try{
       const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
       if(!access_token) throw new Error('Failed to get token from Vercel API');
+      let _proceeded=false;
+      const _proceed=function(){ if(_proceeded)return; _proceeded=true; _showSuccess(); };
       orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
         .withOrbyo('CABINET')
         .withMode('villa recent possession')
@@ -831,8 +833,10 @@ async function sub(e,id){
         .withCustomValues(custom_values)
         .submit(access_token,function(status,msg){
           if(!status)console.error('Lead submission failed: ',msg);
+          _proceed();
         });
-      _showSuccess();
+      // Safety net: don't let a slow/hung Orbyo response trap the user on the form
+      setTimeout(_proceed,2500);
     }catch(err){
       console.error('Failed to fetch token: ',err);
       _showSuccess();

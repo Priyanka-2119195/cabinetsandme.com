@@ -1293,22 +1293,26 @@ async function sub(e,id){
   var _nm=document.getElementById('f-name'),_mb=document.getElementById('f-mobile'),_em=document.getElementById('f-email');
   var _fn=(_nm&&_nm.value.trim())?_nm.value.trim().split(/\s+/)[0]:'';
   var _pendingWaUrl=buildWaUrl(generateWhatsAppMessage({mode:'lead',project:'apartment',firstName:_fn,source:detectSource(_qp)}));
+  function _redirect(){
+    window.location.href='/lp-apartments-meta-01/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
+  }
   function _showSuccess(){
     if(id==='hform'){
       form.style.display='none';
       var wizMeta=document.querySelector('#wiz-hero .wiz-meta'); if(wizMeta) wizMeta.style.display='none';
       var wizTrack=document.querySelector('#wiz-hero .wiz-progress-track'); if(wizTrack) wizTrack.style.display='none';
       var wizSuccess=document.getElementById('wiz-success'); if(wizSuccess) wizSuccess.classList.add('show');
-      setTimeout(function(){ window.location.href='/lp-apartments-meta-01/thank-you?wa='+encodeURIComponent(_pendingWaUrl); },1600);
     } else {
       btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
-      window.location.href='/lp-apartments-meta-01/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
+      _redirect();
     }
   }
   if(typeof orbyo!=='undefined'){
     try{
       const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
       if(!access_token) throw new Error('Failed to get token from Vercel API');
+      let _submitDone=false,_animDone=(id!=='hform');
+      const _maybeRedirect=function(){ if(_submitDone&&_animDone&&id==='hform')_redirect(); };
       orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
         .withOrbyo('CABINET')
         .withMode('apartment meta ads')
@@ -1318,14 +1322,21 @@ async function sub(e,id){
         .withCustomValues(custom_values)
         .submit(access_token,function(status,msg){
           if(!status)console.error('Lead submission failed: ',msg);
+          _submitDone=true; _maybeRedirect();
         });
+      // Safety net: don't let a slow/hung Orbyo response trap the user on the wizard success screen
+      setTimeout(function(){ _submitDone=true; _maybeRedirect(); },2500);
+      // Keep the success animation's minimum on-screen time
+      setTimeout(function(){ _animDone=true; _maybeRedirect(); },1600);
       _showSuccess();
     }catch(err){
       console.error('Failed to fetch token: ',err);
       _showSuccess();
+      if(id==='hform')setTimeout(_redirect,1600);
     }
   } else {
     _showSuccess();
+    if(id==='hform')setTimeout(_redirect,1600);
   }
 }
 // Set visitor WhatsApp button hrefs dynamically on page load
