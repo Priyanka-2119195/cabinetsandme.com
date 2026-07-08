@@ -127,7 +127,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 /* ── FORM FIELDS ────────────────────────────────────── */
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
-.field input,.field select{width:100%;padding:12px 14px;background:var(--teal-xl);border:1.5px solid transparent;border-bottom-color:rgba(13,95,107,.18);font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--text);outline:none;transition:border .2s,background .2s,box-shadow .2s;appearance:none;-webkit-appearance:none;}
+.field input,.field select{width:100%;padding:12px 14px;background:var(--teal-xl);border:1.5px solid transparent;border-bottom-color:rgba(13,95,107,.18);border-radius:8px;font-family:var(--sans);font-size:.9rem;font-weight:300;color:var(--text);outline:none;transition:border .2s,background .2s,box-shadow .2s;appearance:none;-webkit-appearance:none;}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M.5.5l5 5 5-5' stroke='%230D5F6B' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:var(--teal-xl);padding-right:36px;cursor:pointer;}
 .field select option{background:var(--white);}
 .field input:focus,.field select:focus{border-color:var(--teal);background:var(--white);box-shadow:0 0 0 3px rgba(13,95,107,.07);}
@@ -143,13 +143,8 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 
 /* ── LEAD FORM ──────────────────────────────────────── */
 #wiz-hero{position:relative;}
-.wiz-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
-.wiz-chip{position:relative;min-height:44px;display:inline-flex;align-items:center;background:rgba(13,95,107,.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(13,95,107,.2);border-radius:30px;padding:11px 16px;font-size:.78rem;font-weight:500;color:var(--text);cursor:pointer;font-family:var(--sans);overflow:hidden;box-shadow:0 2px 8px rgba(13,95,107,.06);transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;}
-.wiz-chip:hover{border-color:rgba(13,95,107,.4);background:rgba(13,95,107,.1);transform:translateY(-2px);box-shadow:0 8px 20px rgba(13,95,107,.14);}
-.wiz-chip.sel{background:linear-gradient(135deg,rgba(13,95,107,.92),rgba(9,77,87,.96));color:var(--white);border-color:var(--gold);box-shadow:0 8px 22px rgba(13,95,107,.3),0 0 0 1px rgba(255,175,49,.45);animation:wizSelPulse .6s ease-out;}
-@keyframes wizSelPulse{0%{box-shadow:0 0 0 0 rgba(255,175,49,.55);}100%{box-shadow:0 0 0 16px rgba(255,175,49,0);}}
-.hero-form .field input{background:rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.7);border-bottom-color:rgba(13,95,107,.25);}
-.hero-form .field input:focus{background:rgba(255,255,255,.85);}
+.hero-form .field input,.hero-form .field select{background-color:rgba(255,255,255,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.7);border-bottom-color:rgba(13,95,107,.25);}
+.hero-form .field input:focus,.hero-form .field select:focus{background-color:rgba(255,255,255,.85);}
 .wiz-success{display:none;text-align:center;padding:10px 0 4px;}
 .wiz-success.show{display:block;}
 .wiz-success-ring{position:relative;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-dark));display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:wizPop .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 0 8px rgba(13,95,107,.1),0 10px 26px rgba(13,95,107,.35);}
@@ -471,51 +466,45 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     <p class="hero-cta-sub">A few quick details. Confirmed in minutes, no obligation to proceed.</p>
     <div id="wiz-hero">
       <form id="hform" novalidate onsubmit="return sub(event,'hform')">
-        <input type="hidden" id="f-model" value="">
-        <input type="hidden" id="f-location" value="">
-        <input type="hidden" id="f-extra" value="">
         <input type="hidden" id="f-gclid" name="gclid" value="">
         <input type="hidden" id="f-pagelink" name="pagelink" value="">
         <input type="hidden" id="f-utm-source" name="utm_source" value="">
         <input type="hidden" id="f-utm-medium" name="utm_medium" value="">
-        <div class="field" id="fg-model">
-          <label>What kind of kitchen are you designing? *</label>
-          <div class="wiz-chips">
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-model','Modular Kitchen')">Modular Kitchen</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-model','Kitchen + Utility')">Kitchen + Utility</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-model','Full Kitchen Renovation')">Full Kitchen Renovation</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-model','Not Sure Yet')">Not Sure Yet</button>
-          </div>
-          <span class="field-error">Please choose your kitchen type</span>
-        </div>
-        <div class="field" id="fg-location">
-          <label>Where's your home? *</label>
-          <div class="wiz-chips">
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Whitefield')">Whitefield</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Sarjapur Road')">Sarjapur Road</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Bannerghatta Road / JP Nagar')">Bannerghatta / JP Nagar</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Hebbal / Yelahanka')">Hebbal / Yelahanka</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Koramangala / Indiranagar')">Koramangala / Indiranagar</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Electronic City')">Electronic City</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Marathahalli / Bellandur')">Marathahalli / Bellandur</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Other Bengaluru')">Other Bengaluru</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-location','Outside Bengaluru')">Outside Bengaluru</button>
-          </div>
-          <span class="field-error">Please choose your area</span>
-        </div>
-        <div class="field" id="fg-extra">
-          <label>Kitchen Budget *</label>
-          <div class="wiz-chips">
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-extra','₹4L – ₹10L')">₹4L – ₹10L</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-extra','₹10L – ₹20L')">₹10L – ₹20L</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-extra','₹20L+')">₹20L+</button>
-            <button type="button" class="wiz-chip" onclick="optSelect(this,'f-extra','Quality is the priority')">Quality is the priority</button>
-          </div>
-          <span class="field-error">Please choose a budget range</span>
-        </div>
         <div class="field"><label for="f-name">Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
         <div class="field"><label for="f-mobile">Mobile Number *</label><input type="tel" id="f-mobile" placeholder="+91 — — — — — — — — —" required><span class="field-error">Please enter a valid 10-digit Indian mobile number (starting with 6–9)</span></div>
         <div class="field"><label for="f-email">Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+        <div class="field"><label for="f-location">Where's Your Home? *</label>
+          <select id="f-location" required>
+            <option value="" disabled selected>Select your area</option>
+            <option>Whitefield</option>
+            <option>Sarjapur Road</option>
+            <option>Bannerghatta Road / JP Nagar</option>
+            <option>Hebbal / Yelahanka</option>
+            <option>Koramangala / Indiranagar</option>
+            <option>Electronic City</option>
+            <option>Marathahalli / Bellandur</option>
+            <option>Other Bengaluru</option>
+            <option>Outside Bengaluru</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-model">Kitchen Layout Preference *</label>
+          <select id="f-model" required>
+            <option value="" disabled selected>Select an option</option>
+            <option>Modular Kitchen</option>
+            <option>Kitchen + Utility</option>
+            <option>Full Kitchen Renovation</option>
+            <option>Not Sure Yet</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-extra">Approximate Budget *</label>
+          <select id="f-extra" required>
+            <option value="" disabled selected>Select your budget</option>
+            <option>₹4L – ₹10L</option>
+            <option>₹10L – ₹20L</option>
+            <option>₹20L+</option>
+            <option>Quality is the priority</option>
+          </select>
+        </div>
         <button type="submit" class="submit-btn">Design My Kitchen</button>
       </form>
       <div class="wiz-success" id="wiz-success">
@@ -862,16 +851,6 @@ const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
 let reduceMotion = mqReduce.matches;
 mqReduce.addEventListener('change', e => { reduceMotion = e.matches; });
 
-// ── HERO LEAD FORM — option chip groups ─────────────────────────────────
-function optSelect(el,fieldId,value){
-  var grp=el.parentElement;
-  grp.querySelectorAll('.wiz-chip').forEach(function(c){c.classList.remove('sel');});
-  void el.offsetWidth;
-  el.classList.add('sel');
-  document.getElementById(fieldId).value=value;
-  var fg=el.closest('.field');
-  if(fg) clrErr(fg);
-}
 
 // Count-up on stat numbers
 function animateCount(el){
@@ -1077,16 +1056,14 @@ async function sub(e,id){
     else clrErr(ef);
   }
 
-  [['f-model','fg-model'],['f-location','fg-location'],['f-extra','fg-extra']].forEach(pair=>{
-    const grp=document.getElementById(pair[1]);
-    if(!validateSelect(document.getElementById(pair[0]).value)){grp.classList.add('has-err');ok=false;}
-    else clrErr(grp);
+  form.querySelectorAll('select[required]').forEach(sel=>{
+    const sf=sel.closest('.field');
+    if(!validateSelect(sel.value)){setErr(sf,'Please make a selection');ok=false;}
+    else clrErr(sf);
   });
 
   if(!ok){
-    const firstErr=form.querySelector('.has-err');
-    firstErr?.querySelector('input')?.focus();
-    firstErr?.scrollIntoView({behavior:'smooth',block:'center'});
+    form.querySelector('.has-err input, .has-err select')?.focus();
     return;
   }
 
