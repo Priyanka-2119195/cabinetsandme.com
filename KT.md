@@ -55,10 +55,14 @@ cabinetsandme.com/
 │   ├── index.html                      # LP: Recently Possessed Villa
 │   └── thank-you/
 │       └── index.html                  # Thank-you page for recent-possession LP
-└── lp-apartment-owners/
-    ├── index.html                      # LP: Bespoke Apartment Interiors
+├── lp-apartment-owners/
+│   ├── index.html                      # LP: Bespoke Apartment Interiors
+│   └── thank-you/
+│       └── index.html                  # Thank-you page for apartment LP
+└── nri-homeowners/
+    ├── index.html                      # LP: NRI Meta Campaign — Apartment Interiors
     └── thank-you/
-        └── index.html                  # Thank-you page for apartment LP
+        └── index.html                  # Thank-you page for NRI Meta campaign LP
 ```
 
 **No local CSS, JS, image, or font files exist.** Everything is either inline in HTML or loaded from external CDNs (Wixstatic, Google Fonts, Orbyo CDN, jQuery CDN).
@@ -76,12 +80,14 @@ cabinetsandme.com/
 | Villa Under Construction | `/lp-villa-under-construction` | `lp-villa-under-construction/index.html` | Lead gen for pre-possession planning | "Plan My Villa Interiors →" | Yes |
 | Villa Recent Possession | `/lp-villa-recent-possession` | `lp-villa-recent-possession/index.html` | Lead gen for recently-possessed villas | "Elevate Your Villa →" | Yes |
 | Apartment Owners | `/lp-apartment-owners` | `lp-apartment-owners/index.html` | Lead gen for luxury apartment interiors | "Commission My Apartment →" | Yes |
+| NRI Homeowners (Meta) | `/nri-homeowners` | `nri-homeowners/index.html` | Lead gen for NRI apartment owners abroad — Meta campaign | "Book Your Design Consultation →" | Yes |
 | Kitchen Thank You | `/lp-villa-kitchen/thank-you` | `lp-villa-kitchen/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
 | Wardrobes Thank You | `/lp-villa-wardrobes/thank-you` | `lp-villa-wardrobes/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
 | Renovation Thank You | `/lp-villa-renovation/thank-you` | `lp-villa-renovation/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
 | Under Construction Thank You | `/lp-villa-under-construction/thank-you` | `lp-villa-under-construction/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
 | Recent Possession Thank You | `/lp-villa-recent-possession/thank-you` | `lp-villa-recent-possession/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
 | Apartment Thank You | `/lp-apartment-owners/thank-you` | `lp-apartment-owners/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA | No |
+| NRI Homeowners Thank You | `/nri-homeowners/thank-you` | `nri-homeowners/thank-you/index.html` | Post-submission confirmation + WA redirect | WhatsApp CTA + Explore Projects / Return to Website | No |
 
 ---
 
@@ -204,7 +210,33 @@ cabinetsandme.com/
 
 ---
 
-### Thank-You Pages (all 6 — identical structure, different quote/WA message)
+### `nri-homeowners/index.html` — NRI Homeowners LP (Meta Campaign)
+- **Purpose:** Duplicated from `lp-villa-recent-possession` for a Meta Ads campaign targeting NRIs (UAE, Saudi Arabia, Qatar, Oman, Kuwait, Bahrain, Singapore, UK, US, Canada, Australia) who own or recently purchased a Bengaluru apartment. Goal is consultation enquiries, not sales-heavy discounting.
+- **Title:** `Luxury Apartment Interiors In Bengaluru For NRIs | Cabinets & Me`
+- **Meta desc:** "Premium apartment interior design in Bengaluru for NRI homeowners. Luxury modular kitchens, wardrobes and complete interiors managed remotely from design to installation."
+- **Canonical / OG / Twitter tags:** Present on this LP only (no other LP has these yet — see Known Issues §16).
+- **Hero H1:** "Your Home. Ready Before You Return." — **Hero eyebrow:** "For NRI Homeowners · Bengaluru Apartments"
+- **Hero CTAs:** Primary "Book Your Design Consultation" (scrolls to `#hform`, new `.hero-btn-primary` class) + secondary "View Our Projects" (anchors to `#portfolio`, new `.hero-btn-outline` class) — the only LP with buttons in `.hero-left`.
+- **Badges:** LGA Certified · Remote Project Management · German Machinery · 100% In-House
+- **Form fields (unique to this LP):** Name, Phone (international format — see below), Email, **Current Country** (`f-model` repurposed — UAE/Saudi Arabia/Qatar/Oman/Kuwait/Bahrain/Singapore/UK/US/Canada/Australia/Other), Apartment Location in Bengaluru (`f-location` — expanded locality list incl. HSR Layout, Bellandur, Marathahalli, Jayanagar, RR Nagar, North/East/South Bengaluru), Expected Possession (`f-extra` repurposed — Already Possessed / Within 3 Months / 3–6 / 6–12 / More Than 12), and a new optional **Message** `<textarea id="f-message">`.
+- **Phone validation:** `validatePhone()` on this page only accepts general international numbers (`/^\+?\d{7,15}$/`) instead of the strict 10-digit Indian mobile regex used on the other 6 LPs, since NRI leads dial with a foreign country code. Do not port this change back to the other LPs — their audience dials from within India.
+- **Hidden fields:** Standard `f-gclid`/`f-pagelink`/`f-utm-source`/`f-utm-medium` plus 3 new static hidden fields — `f-campaign` ("NRI Meta"), `f-static-source` ("Meta"), `f-static-medium` ("Paid") — read into `custom_values` as `campaign`/`lead_source_tag`/`lead_medium_tag`.
+- **Orbyo `.withMode()`:** `'nri apartment'`. **WA project key:** `'nri'` (added to the shared `vP`/`lP` dictionaries alongside the other 6 project keys).
+- **Unique sections built by reusing otherwise-dormant shared CSS:** `#villas` (repurposed as "Designed For Homeowners Living Overseas" — 4 cards: One Dedicated Team / Remote Design Process / Transparent Project Updates / Ready Before You Return; now also has a `.villas-bg` background photo + teal gradient overlay, same technique as `.studio-bg`; `.villa-card` background darkened to `rgba(6,40,46,.34)` with a slight blur for legibility over the photo), `#materials` (repurposed as "Our Expertise" — 6-card `.mat-grid` at `repeat(3,1fr)` on desktop (was 4 cols in the original component; changed here so 6 photo cards form two even rows): Kitchens, Wardrobes, Living Spaces, Bathrooms, Storage, Furniture, each with a `.mat-media` photo thumbnail. TV Units and Utility Areas were dropped — they had no matching photo and looked sparse as icon-only cards), `#collections` (new "Curated By Room" — 3 cards: Kitchens, Wardrobes, Bathrooms, inserted between Expertise and the Project Gallery), `#testimonials` (2 new NRI-client quotes — Dubai, London). These classes exist in every LP's copy-pasted CSS block but were previously unused HTML in this LP's source (`lp-villa-recent-possession`).
+- **Hero height fix:** `#hero` changed from `min-height:100vh` to `height:100vh;min-height:640px` (desktop only — mobile media query resets it to `height:auto`). With the extra NRI form fields and hero CTAs, `min-height:100vh` let the section grow taller than the viewport on common laptop heights (~750–800px), pushing the hero CTAs and the form's submit button below the fold with no indication there was more to see. `.hero-form` keeps its `overflow-y:auto` so the form scrolls internally if it's ever taller than the panel. `.hero-left` does **not** use `overflow-y:auto` — an internal scrollbar on just the left column read as broken/disconnected from the rest of the page. Instead its vertical rhythm (padding, eyebrow/sub/CTA margins) uses `min(Npx, Nvh)` so spacing compresses on short viewports, and `h1.hero-title` uses `clamp(2.1rem, 4vw + 1.5vh, 4.4rem)` so type scales with both viewport axes — content fits without ever needing to scroll, verified down to the 640px floor. The form itself was also compacted — paired fields into `.field-row` (Name+Phone, Email+Current Country), tighter padding/margins.
+- **"Other" country field:** selecting "Other" in Current Country (`#f-model`) reveals `#f-model-other-wrap` (a free-text input, `onchange="toggleOtherCountry(this)"` on the select). Required only when visible — validated in `sub()` alongside the other fields. The typed value replaces the literal string `"Other"` in `custom_values.model` before the Orbyo submit.
+- **Grid-orphan fixes:** three grids in this LP have item counts that don't divide evenly into their column count, which left an empty, misaligned gap after the content was filled in. Fixed: the 7th `.proc-card` (Process) is centered in its own row (`grid-template-columns:1fr;margin:auto;max-width:384px` — note the `grid-template-columns` override is required, otherwise the single item only fills 1 of 3 implicit columns and renders too narrow); the 7th `.std-panel` (Why Cabinets & Me) spans both columns (`grid-column:1/-1`) instead of leaving an empty cell beside it; the portfolio's first item no longer uses the `.port-item.wide` modifier (2+1+1+1+1+1 = 7 grid units in a 3-col grid orphaned the 6th image) — 6 plain items now form two clean rows of 3.
+- **`#standard` repurposed as "Why Cabinets & Me"** — expanded from 4 to 7 `.std-panel` cards (Premium Materials, Hardware, Design Philosophy, Our Team, Manufacture, Installation, After-Sales).
+- **`#process` expanded from 6 to 7 `.proc-card` steps** — Book Consultation → Understand Your Apartment → Design & Material Selection → Remote Reviews & Approvals → Manufacturing → Professional Installation → Project Handover.
+- **`#portfolio` gallery** — all 6 items use local photos (see Local Images below); the first item now uses the previously-unused `.port-item.wide` modifier (CSS existed but no LP used it before this page).
+- **New `#areas` section** ("Serving Apartment Owners Across Bengaluru") — reuses the existing `.badge` pill component (previously only used in hero) as a 17-item locality tag list. No new CSS beyond a couple of inline layout styles.
+- **Local Images (unique to this LP):** This is the only LP with local image assets, dropped directly into `nri-homeowners/` (12 files: `kitchen_1-1.jpg`, `kitchen_3_1-1.jpg`, `kitchen_4_1-1.jpg`, `living_area_1-1.jpg`, `sideboards_2_1-1.jpg`, `wardrobes_1-1.jpg`, `Kitchen_Cabinets_2_1-1.png`, `Kitchen_Cabinets_2_9-16.png`, `Kitchen_Cabinets_3_1-1.png`, `Sideboards_2_1-1.png`, `Walkin_Closet_2_9-16.png`, `Bathroom_Cabinets_9-16.png`). Referenced with plain relative `<img src="...">` (no `<picture>`/AVIF — those variants don't exist for these files, unlike the CDN-hosted Wixstatic assets on the other 6 LPs). `loading="lazy"` used on everything below the fold, per KT §18. Images are reused across sections (hero/mosaic/expertise/collections/portfolio) the same way the original 6 LPs reuse their Wixstatic photos.
+- **Hero bg / OG / Twitter image:** `kitchen_1-1.jpg` (local). The hero background is a `linear-gradient(...)` + `url('kitchen_1-1.jpg')` composite (in `.hero-bg`) instead of the flat low-opacity watermark technique used on the other 6 LPs — the gradient keeps text legible over a full-strength real photo. OG/Twitter image tags point to the absolute production URL `https://www.cabinetsandme.com/nri-homeowners/kitchen_1-1.jpg`.
+- **WA message (thank-you):** "I'm an NRI homeowner with an apartment in Bengaluru and I want to design it with someone who brings real vision. I'm ready to begin — when can we talk?"
+
+---
+
+### Thank-You Pages (7 pages total — identical structure, different quote/WA message)
 
 All thank-you pages share the same layout and logic:
 - **Layout:** Two-column grid (55fr / 45fr). Left = full-bleed image panel. Right = confirmation content.
@@ -213,6 +245,7 @@ All thank-you pages share the same layout and logic:
 - **Robots:** `noindex, nofollow` on all thank-you pages
 - **Countdown:** If URL has `?wa=<encoded-url>` param, shows 3-second countdown then redirects to WhatsApp
 - **What differs per TY page:** Background image URL, italic quote on image panel, WA pre-filled message
+- **`nri-homeowners/thank-you` only:** `<h1>` is "Thank You!" (not "Thank You for Submitting Your Details.") with a separate subheading/body copy block above the WhatsApp CTA, and two extra CTA buttons below the WhatsApp card — "Explore Our Projects" (→ `cabinetsandme.com/projects`) and "Return To Website" (→ `cabinetsandme.com`) — using new `.ty-btn`/`.ty-btn-primary`/`.ty-btn-outline` classes added to this page's `<style>` block only (mirrors the `.btn`/`.btn-white`/`.btn-outline` pattern from the main LP studio section, recoloured for a light background). No other TY page has these buttons.
 
 | LP | TY Background Image | Quote on Image |
 |---|---|---|
@@ -222,6 +255,7 @@ All thank-you pages share the same layout and logic:
 | Under Construction | `e3b82d_8ca0abdf00f746afafdf8840cd5a92ee~mv2.jpg` | "The most discerning clients plan their interiors before possession." |
 | Recent Possession | `e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg` | "You have the keys. Now design the home it deserves." |
 | Apartment | `e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg` | "Your apartment should be the most considered space you own." |
+| NRI Homeowners | `../kitchen_1-1.jpg` (local, only TY page using a local image) | "Your home. Ready before you return." |
 
 ---
 
