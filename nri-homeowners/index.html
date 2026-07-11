@@ -103,6 +103,9 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 .form-heading{font-family:var(--serif);font-size:1.6rem;font-weight:400;line-height:1.18;color:var(--teal-dark);margin-bottom:18px;}
 .field{margin-bottom:11px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.phone-split{display:flex;gap:8px;}
+.phone-split select{flex:0 0 108px;padding-right:28px;}
+.phone-split input{flex:1;min-width:0;}
 .field label{display:block;font-size:.58rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:5px;}
 .field input,.field select,.field textarea{width:100%;padding:10px 14px;background:var(--teal-xl);border:1.5px solid transparent;border-bottom-color:rgba(13,95,107,.18);border-radius:6px;font-family:var(--sans);font-size:.88rem;font-weight:300;color:var(--text);outline:none;transition:border .2s,background .2s;appearance:none;-webkit-appearance:none;}
 .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M.5.5l5 5 5-5' stroke='%230D5F6B' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:var(--teal-xl);padding-right:36px;cursor:pointer;}
@@ -446,24 +449,47 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     <form id="hform" onsubmit="sub(event,'hform')">
       <div class="field-row">
         <div class="field"><label>Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
-        <div class="field"><label>Phone Number *</label><input type="tel" id="f-mobile" placeholder="e.g. +971..." required><span class="field-error">Enter a valid phone number with country code</span></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
-        <div class="field"><label>Current Country *</label><select id="f-model" required onchange="toggleOtherCountry(this)"><option value="" disabled selected>Choose...</option>
+        <div class="field"><label>Current Country *</label><select id="f-model" required onchange="toggleOtherCountry(this);syncPhoneCode(this)"><option value="" disabled selected>Choose...</option>
 <option>UAE</option><option>Saudi Arabia</option><option>Qatar</option><option>Oman</option>
 <option>Kuwait</option><option>Bahrain</option><option>Singapore</option>
 <option>United Kingdom</option><option>United States</option><option>Canada</option>
 <option>Australia</option><option>Other</option></select></div>
       </div>
       <div class="field" id="f-model-other-wrap" style="display:none;"><label>Please Specify Your Country *</label><input type="text" id="f-model-other" placeholder="Enter your country name"></div>
-      <div class="field"><label>Apartment Location in Bengaluru *</label><select id="f-location" required><option value="" disabled selected>Select the area</option>
+      <div class="field">
+        <label>Phone Number *</label>
+        <div class="phone-split">
+          <select id="f-phone-code" required onchange="toggleOtherPhoneCode(this)">
+            <option value="" disabled selected>Code</option>
+            <option value="+971">+971 UAE</option>
+            <option value="+966">+966 Saudi Arabia</option>
+            <option value="+974">+974 Qatar</option>
+            <option value="+968">+968 Oman</option>
+            <option value="+965">+965 Kuwait</option>
+            <option value="+973">+973 Bahrain</option>
+            <option value="+65">+65 Singapore</option>
+            <option value="+44">+44 UK</option>
+            <option value="+1" data-country="United States">+1 US</option>
+            <option value="+1" data-country="Canada">+1 Canada</option>
+            <option value="+61">+61 Australia</option>
+            <option value="+91">+91 India</option>
+            <option value="other">Other</option>
+          </select>
+          <input type="tel" id="f-mobile" placeholder="Phone number" required>
+        </div>
+        <span class="field-error">Select your country code and enter a valid phone number</span>
+      </div>
+      <div class="field" id="f-phone-code-other-wrap" style="display:none;"><label>Please Specify Your Country Code *</label><input type="text" id="f-phone-code-other" placeholder="e.g. +33"></div>
+      <div class="field-row">
+        <div class="field"><label>Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+        <div class="field"><label>Apartment Location in Bengaluru *</label><select id="f-location" required><option value="" disabled selected>Select the area</option>
 <option>Whitefield</option><option>Sarjapur</option><option>Electronic City</option>
 <option>HSR Layout</option><option>Koramangala</option><option>Indiranagar</option>
 <option>Hebbal</option><option>Yelahanka</option><option>JP Nagar</option>
 <option>Bannerghatta Road</option><option>Bellandur</option><option>Marathahalli</option>
 <option>Jayanagar</option><option>RR Nagar</option><option>North Bengaluru</option>
 <option>East Bengaluru</option><option>South Bengaluru</option></select></div>
+      </div>
       <div class="field"><label>Expected Possession *</label>
         <select id="f-extra" required>
           <option value="" disabled selected>Select possession status</option>
@@ -768,6 +794,10 @@ var element=document.getElementsByTagName("script");element=element[element.leng
       <div class="testi-card r"><p class="testi-quote">We furnished our entire apartment from Dubai without a single site visit. Every review happened over a call, and the finish when we finally walked in matched every render exactly.</p><div class="testi-name">Arvind &amp; Meera Rao</div><div class="testi-role">Apartment Owner · Whitefield · Based in Dubai, UAE</div></div>
       <div class="testi-card r d1"><p class="testi-quote">What mattered most to us was having one team accountable for everything. No chasing separate vendors from London, just regular updates and a home that was genuinely ready when we landed.</p><div class="testi-name">Priya Nair</div><div class="testi-role">Apartment Owner · Sarjapur · Based in London, UK</div></div>
     </div>
+    <div class="r d2" style="text-align:center;margin-top:44px;padding-top:36px;border-top:1px solid rgba(255,255,255,.14);">
+      <p style="font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:300;color:rgba(255,255,255,.8);margin-bottom:14px;">Considering us from afar? We're glad to talk it through.</p>
+      <a href="https://wa.me/919164711696?text=Hi%2C%20I%20came%20across%20Cabinets%20%26%20Me%20and%20would%20love%20to%20learn%20more%20before%20making%20a%20decision." target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;font-size:.62rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);">Speak To Our Design Team On WhatsApp &nbsp;→</a>
+    </div>
   </div>
 </section>
 
@@ -898,6 +928,36 @@ function toggleOtherCountry(sel){
   }
 }
 
+// Keep the phone country code in sync with Current Country every time it
+// changes (not just the first time), so switching the country always
+// switches the code with it.
+var COUNTRY_TO_DIAL_CODE={'UAE':'+971','Saudi Arabia':'+966','Qatar':'+974','Oman':'+968','Kuwait':'+965','Bahrain':'+973','Singapore':'+65','United Kingdom':'+44','United States':'+1','Canada':'+1','Australia':'+61'};
+function syncPhoneCode(countrySel){
+  const codeSel=document.getElementById('f-phone-code');
+  if(!codeSel)return;
+  const dial=COUNTRY_TO_DIAL_CODE[countrySel.value];
+  if(!dial)return;
+  const match=Array.from(codeSel.options).find(o=>o.value===dial&&(!o.dataset.country||o.dataset.country===countrySel.value));
+  if(match){
+    codeSel.selectedIndex=match.index;
+    toggleOtherPhoneCode(codeSel);
+    clrErr(codeSel.closest('.field'));
+  }
+}
+
+// Show a free-text field when "Other" is chosen as the phone country code
+function toggleOtherPhoneCode(sel){
+  const wrap=document.getElementById('f-phone-code-other-wrap');
+  const other=document.getElementById('f-phone-code-other');
+  if(sel.value==='other'){
+    wrap.style.display='block';
+  } else {
+    wrap.style.display='none';
+    other.value='';
+    clrErr(wrap);
+  }
+}
+
 // FAQ accordion
 function faq(btn){
   const item=btn.closest('.faq-item'),isOpen=item.classList.contains('open');
@@ -907,12 +967,29 @@ function faq(btn){
 }
 
 // ── VALIDATION HELPERS ────────────────────────────────────────────────────
-// International format for NRI clients dialling from overseas, accepts an optional
-// leading + and 7–15 digits, rather than the strict 10-digit Indian mobile format
-// used on the other LPs (those clients are all dialling from within India).
+// The phone number is split into a country-code select (f-phone-code, with an
+// "Other" free-text fallback at f-phone-code-other) and a local-number input
+// (f-mobile), rather than one free-text field, so every submission has an
+// unambiguous, correctly-coded number regardless of which of the 11 NRI
+// countries the visitor is dialling from.
 function validatePhone(raw){
   let n=raw.replace(/[\s\-().]/g,'');
-  return /^\+?\d{7,15}$/.test(n);
+  return /^\d{5,12}$/.test(n);
+}
+function getPhoneCode(){
+  const sel=document.getElementById('f-phone-code');
+  if(!sel)return'';
+  if(sel.value==='other'){
+    const other=document.getElementById('f-phone-code-other');
+    return other?other.value.trim():'';
+  }
+  return sel.value;
+}
+function getFullPhoneNumber(){
+  const code=getPhoneCode();
+  const num=document.getElementById('f-mobile');
+  const digits=num?num.value.replace(/[\s\-().]/g,''):'';
+  return code&&digits?code+digits:'';
 }
 function validateName(v){return v.trim().length>=2;}
 function validateSelect(v){return v&&v.trim()!=='';}
@@ -970,15 +1047,25 @@ async function sub(e,id){
     else clrErr(nf);
   }
 
-  // Phone
+  // Phone (country code select + local number)
   const telInp=form.querySelector('input[type="tel"]');
+  const codeSel=document.getElementById('f-phone-code');
   if(telInp){
     const pf=telInp.closest('.field');
-    if(!validatePhone(telInp.value.trim())){
-      setErr(pf,'Enter a valid phone number with country code');
+    const codeOk=codeSel&&codeSel.value&&(codeSel.value!=='other'||getPhoneCode());
+    if(!codeOk||!validatePhone(telInp.value.trim())){
+      setErr(pf,'Select your country code and enter a valid phone number');
       pf.classList.add('phone-err');
       ok=false;
     } else clrErr(pf);
+  }
+
+  // "Other" phone country code free-text field, only required when selected
+  const phoneCodeOtherWrap=document.getElementById('f-phone-code-other-wrap');
+  const phoneCodeOtherInp=document.getElementById('f-phone-code-other');
+  if(codeSel&&codeSel.value==='other'){
+    if(!phoneCodeOtherInp.value.trim()){setErr(phoneCodeOtherWrap,'Please enter your country code');ok=false;}
+    else clrErr(phoneCodeOtherWrap);
   }
 
   // Email (optional but format-checked if filled)
@@ -1037,7 +1124,7 @@ async function sub(e,id){
       orbyo.bl.withName(document.getElementById('f-name')?document.getElementById('f-name').value:'')
         .withOrbyo('CABINET')
         .withMode('nri apartment')
-        .withMobile(document.getElementById('f-mobile')?document.getElementById('f-mobile').value:'')
+        .withMobile(getFullPhoneNumber())
         .withEmail(document.getElementById('f-email')?document.getElementById('f-email').value:'')
         .withUserComment(_msg?_msg.value:'')
         .withCustomValues(custom_values)
