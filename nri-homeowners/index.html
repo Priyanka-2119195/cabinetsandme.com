@@ -2,13 +2,17 @@
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-ETE07PL3RP');
+  window.addEventListener('load', function(){
+    var gtmScript = document.createElement('script');
+    gtmScript.async = true;
+    gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP';
+    document.head.appendChild(gtmScript);
+  });
 </script>
 <link rel="preload" as="image" fetchpriority="high" href="/nri-homeowners/kitchen_1-1_16-9.webp" type="image/webp">
 <meta charset="UTF-8">
