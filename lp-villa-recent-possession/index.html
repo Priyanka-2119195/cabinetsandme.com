@@ -2,21 +2,51 @@
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-ETE07PL3RP');
+  // GTM, the Meta Pixel, and the Orbyo Intel widget each queue their calls
+  // safely (dataLayer/fbq's stub, orbyoIntel's own init guard) until their
+  // real script loads, so none of them need to block initial render. Each
+  // schedules its own script fetch off window 'load' via requestIdleCallback
+  // (setTimeout fallback for Safari), staggered so they don't all pile onto
+  // the main thread in the same tick. Same pattern as nri-homeowners — see
+  // KT.md §20 before changing this.
+  window._loadOnIdle = function(fn, timeout){
+    if('requestIdleCallback' in window){ requestIdleCallback(fn, {timeout: timeout}); }
+    else { setTimeout(fn, timeout); }
+  };
+  window.addEventListener('load', function(){
+    _loadOnIdle(function(){
+      var gtmScript = document.createElement('script');
+      gtmScript.async = true;
+      gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP';
+      document.head.appendChild(gtmScript);
+    }, 800);
+  });
 </script>
-<script type="text/javascript" src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bespoke Villa Interiors, Bengaluru — Cabinets &amp; Me</title>
 <meta name="description" content="You have the keys. Now design the home it deserves. Cabinets and Me crafts bespoke villa interiors for Bengaluru finest homes.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1422274186613862');fbq('track','PageView');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"></noscript>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+window.addEventListener('load', function(){
+  _loadOnIdle(function(){
+    var t=document.createElement('script');
+    t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
+    var s=document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t,s);
+    fbq('init','1422274186613862');fbq('track','PageView');
+  }, 1600);
+});
+</script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1422274186613862&ev=PageView&noscript=1"/></noscript>
 <style>
 /* ── TOKENS ─────────────────────────────────────────── */
@@ -55,6 +85,11 @@ a{text-decoration:none;color:inherit;}
 .r{opacity:0;transform:translateY(24px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1);}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+/* Hero content is above the fold and includes the LCP element (.hero-sub):
+   it must paint at full opacity immediately (opacity:0 elements are never
+   valid LCP candidates), so it keeps the slide-up motion but drops the
+   opacity dip. Same fix as nri-homeowners — see KT.md §20. */
+#hero .r{opacity:1;}
 
 /* ── NAV ────────────────────────────────────────────── */
 nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:72px;transition:box-shadow .3s;}
@@ -388,11 +423,20 @@ footer{background:var(--teal-dark);padding:60px 52px 32px;}
 </head>
 <body>
 <script type="text/javascript">//<![CDATA[
+window.addEventListener('load', function(){
+_loadOnIdle(function(){
+var loader=document.createElement('script');
+loader.src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js";
+loader.onload=function(){
 var widgetParams = {orbyo: 'CABINET'};
 var orbyoUrl="https://www.orbyo.com/",iframe=document.createElement("iframe");
 widgetParams.version=.1,widgetParams.widgetType="oa",iframe.style.cssText="height: 0px;width: 0px;display: none;visibility: hidden",iframe.src=orbyoUrl+"resources/widgets/"+widgetParams.widgetType+".html?params="+encodeURI(JSON.stringify(widgetParams));
 try{"undefined"!=typeof orbyoIntel&&"function"==typeof orbyoIntel.init?iframe.onload=orbyoIntel.init(iframe):console.error("orbyoIntel.min.js missing")}catch(a){console.error(a.message)}
 var element=document.getElementsByTagName("script");element=element[element.length-1],element.parentNode.insertBefore(iframe,element);
+};
+document.head.appendChild(loader);
+}, 2400);
+});
 //]]></script>
 
 <nav id="nav">
@@ -402,6 +446,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   <button class="mob-btn" aria-label="Menu"><svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M0 1h22M0 8h22M0 15h22" stroke="#094D57" stroke-width="1.5"/></svg></button>
 </nav>
 
+<main>
 <section id="hero">
   <div class="hero-bg" style="background-image:image-set(url('https://static.wixstatic.com/media/e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg/v1/fit/w_1920,h_1080,enc_avif,quality_auto/image.avif') type('image/avif'),url('https://static.wixstatic.com/media/e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg') type('image/jpeg'));"></div>
   <div class="hero-left">
@@ -417,15 +462,15 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     <div class="form-eyebrow">Complimentary Design Consultation</div>
     <div class="form-heading">Begin Your Villa's Interior Legacy</div>
     <form id="hform" onsubmit="sub(event,'hform')">
-      <div class="field"><label>Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
-      <div class="field"><label>Mobile Number *</label><input type="tel" id="f-mobile" placeholder="+91 — — — — — — — — —" required><span class="field-error">Please enter a valid 10-digit Indian mobile number (starting with 6–9)</span></div>
-      <div class="field"><label>Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
-      <div class="field"><label>Villa Location *</label><select id="f-location" required><option value="" disabled selected>Select your area</option>
+      <div class="field"><label for="f-name">Full Name *</label><input type="text" id="f-name" placeholder="Your full name" required></div>
+      <div class="field"><label for="f-mobile">Mobile Number *</label><input type="tel" id="f-mobile" placeholder="+91 — — — — — — — — —" required><span class="field-error">Please enter a valid 10-digit Indian mobile number (starting with 6–9)</span></div>
+      <div class="field"><label for="f-email">Email Address</label><input type="email" id="f-email" placeholder="your@email.com"></div>
+      <div class="field"><label for="f-location">Villa Location *</label><select id="f-location" required><option value="" disabled selected>Select your area</option>
 <option>Whitefield</option><option>Sarjapur Road</option><option>Kanakapura Road</option>
 <option>Hebbal / Yelahanka</option><option>JP Nagar / Bannerghatta</option>
 <option>Electronic City</option><option>Koramangala / Indiranagar</option>
 <option>Other Bengaluru</option><option>Outside Bengaluru</option></select></div>
-      <div class="field"><label>What Are You Looking to Design? *</label>
+      <div class="field"><label for="f-model">What Are You Looking to Design? *</label>
         <select id="f-model" required>
           <option value="" disabled selected>Select scope of work</option>
           <option>Full Villa Interiors</option><option>Kitchen Only</option>
@@ -433,7 +478,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
           <option>Specific Rooms</option>
         </select>
       </div>
-      <div class="field"><label>Approximate Budget *</label>
+      <div class="field"><label for="f-extra">Approximate Budget *</label>
         <select id="f-extra" required>
           <option value="" disabled selected>Select budget range</option>
           <option>₹10L – ₹20L</option><option>₹20L – ₹40L</option>
@@ -631,6 +676,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="foot-grid">
@@ -818,7 +864,20 @@ async function sub(e,id){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     window.location.href='/lp-villa-recent-possession/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
   }
-  if(typeof orbyo!=='undefined'){
+  // The Orbyo lead-submission script now loads on window 'load' rather than
+  // as a static <script> tag, so if someone submits before it's finished
+  // loading, wait briefly for it rather than silently skipping the CRM
+  // submission and only showing the success redirect. See KT.md §20.
+  const _orbyoReady=await new Promise(function(resolve){
+    if(typeof orbyo!=='undefined'){resolve(true);return;}
+    let _waited=0;const _step=150,_maxWait=5000;
+    const _timer=setInterval(function(){
+      _waited+=_step;
+      if(typeof orbyo!=='undefined'){clearInterval(_timer);resolve(true);}
+      else if(_waited>=_maxWait){clearInterval(_timer);resolve(false);}
+    },_step);
+  });
+  if(_orbyoReady){
     try{
       const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
       if(!access_token) throw new Error('Failed to get token from Vercel API');
@@ -853,6 +912,25 @@ async function sub(e,id){
   var _st=document.querySelector('#studio a.btn-outline');if(_st)_st.href=_u;
 })();
 </script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script type="text/javascript" src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
+<script>
+// jQuery + the Orbyo lead-submission API are only needed once a visitor
+// actually submits the form, well after the page has loaded, so they're
+// fetched after window 'load' instead of blocking as static <script> tags.
+// Unlike the analytics scripts above, this loader is NOT staggered via
+// _loadOnIdle — it gates whether a lead actually reaches the CRM, so it
+// fires as soon as possible. sub() below waits for it if a visitor submits
+// before it's finished loading. See KT.md §20.
+window.addEventListener('load', function(){
+  var jq = document.createElement('script');
+  jq.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+  jq.onload = function(){
+    var ol = document.createElement('script');
+    ol.type = 'text/javascript';
+    ol.src = 'https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js';
+    document.body.appendChild(ol);
+  };
+  document.body.appendChild(jq);
+});
+</script>
 </body>
 </html>
