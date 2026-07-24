@@ -2,23 +2,53 @@
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-ETE07PL3RP');
+  // GTM, the Meta Pixel, and the Orbyo Intel widget each queue their calls
+  // safely (dataLayer/fbq's stub, orbyoIntel's own init guard) until their
+  // real script loads, so none of them need to block initial render. Each
+  // schedules its own script fetch off window 'load' via requestIdleCallback
+  // (setTimeout fallback for Safari), staggered so they don't all pile onto
+  // the main thread in the same tick. Same pattern as nri-homeowners — see
+  // KT.md §20 before changing this.
+  window._loadOnIdle = function(fn, timeout){
+    if('requestIdleCallback' in window){ requestIdleCallback(fn, {timeout: timeout}); }
+    else { setTimeout(fn, timeout); }
+  };
+  window.addEventListener('load', function(){
+    _loadOnIdle(function(){
+      var gtmScript = document.createElement('script');
+      gtmScript.async = true;
+      gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP';
+      document.head.appendChild(gtmScript);
+    }, 800);
+  });
 </script>
-<script type="text/javascript" src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bespoke Apartment Interiors, Bengaluru — Cabinets &amp; Me</title>
 <meta name="description" content="Every flat in your tower got the same builder kitchen. Yours doesn't have to stay that way. Cabinets &amp; Me designs bespoke kitchens, wardrobes and interiors around your apartment.">
 <link rel="preconnect" href="https://static.wixstatic.com">
 <link rel="preload" as="image" fetchpriority="high" href="https://static.wixstatic.com/media/e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg/v1/fit/w_1920,h_1080,enc_avif,quality_auto/image.avif">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1422274186613862');fbq('track','PageView');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"></noscript>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+window.addEventListener('load', function(){
+  _loadOnIdle(function(){
+    var t=document.createElement('script');
+    t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
+    var s=document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t,s);
+    fbq('init','1422274186613862');fbq('track','PageView');
+  }, 1600);
+});
+</script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1422274186613862&ev=PageView&noscript=1"/></noscript>
 <style>
 /* ── TOKENS ─────────────────────────────────────────── */
@@ -57,6 +87,11 @@ a{text-decoration:none;color:inherit;}
 .r{opacity:0;transform:translateY(24px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1);}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+/* Hero content is above the fold and includes the LCP element (.hero-sub):
+   it must paint at full opacity immediately (opacity:0 elements are never
+   valid LCP candidates), so it keeps the slide-up motion but drops the
+   opacity dip. Same fix as nri-homeowners — see KT.md §20. */
+#hero .r{opacity:1;}
 
 /* ── CINEMATIC IMAGE REVEAL (layers on .r/.in, no JS) ──
    clip-path lives on the <img>, never on the observed .r target itself —
@@ -425,11 +460,20 @@ footer{background:linear-gradient(160deg,var(--teal-dark) 0%,var(--teal-deep) 13
 </head>
 <body>
 <script type="text/javascript">//<![CDATA[
+window.addEventListener('load', function(){
+_loadOnIdle(function(){
+var loader=document.createElement('script');
+loader.src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js";
+loader.onload=function(){
 var widgetParams = {orbyo: 'CABINET'};
 var orbyoUrl="https://www.orbyo.com/",iframe=document.createElement("iframe");
 widgetParams.version=.1,widgetParams.widgetType="oa",iframe.style.cssText="height: 0px;width: 0px;display: none;visibility: hidden",iframe.src=orbyoUrl+"resources/widgets/"+widgetParams.widgetType+".html?params="+encodeURI(JSON.stringify(widgetParams));
 try{"undefined"!=typeof orbyoIntel&&"function"==typeof orbyoIntel.init?iframe.onload=orbyoIntel.init(iframe):console.error("orbyoIntel.min.js missing")}catch(a){console.error(a.message)}
 var element=document.getElementsByTagName("script");element=element[element.length-1],element.parentNode.insertBefore(iframe,element);
+};
+document.head.appendChild(loader);
+}, 2400);
+});
 //]]></script>
 
 <nav id="nav">
@@ -439,7 +483,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   <button class="mob-btn" id="mobBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobDrawer"><svg id="mobBtnIcon" width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M0 1h22M0 8h22M0 15h22" stroke="currentColor" stroke-width="1.5"/></svg></button>
 </nav>
 
-<nav class="mob-drawer" id="mobDrawer" aria-hidden="true">
+<nav class="mob-drawer" id="mobDrawer" aria-hidden="true" inert>
   <a href="#portfolio">Projects</a>
   <a href="#process">Process</a>
   <a href="#faq">FAQs</a>
@@ -447,6 +491,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   <a href="#wiz-hero" class="nav-cta">Schedule A Design Consultation</a>
 </nav>
 
+<main>
 <section id="hero">
   <div class="hero-bg" style="background-image:image-set(url('https://static.wixstatic.com/media/e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg/v1/fit/w_1920,h_1080,enc_avif,quality_auto/image.avif') type('image/avif'),url('https://static.wixstatic.com/media/e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg') type('image/jpeg'));"></div>
   <div class="hero-orbs" aria-hidden="true"><span class="orb orb-gold"></span><span class="orb orb-teal"></span></div>
@@ -457,7 +502,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
   </div>
   <div class="hero-form r d2">
     <div class="form-eyebrow">Schedule A Design Consultation</div>
-    <h3 class="hero-cta-h">Let's Design Your<br><em>Apartment, Together.</em></h3>
+    <h2 class="hero-cta-h">Let's Design Your<br><em>Apartment, Together.</em></h2>
     <p class="hero-cta-sub">A few quick details. Confirmed in minutes, no obligation to proceed.</p>
     <div id="wiz-hero">
       <form id="hform" novalidate onsubmit="return sub(event,'hform')">
@@ -792,6 +837,7 @@ var element=document.getElementsByTagName("script");element=element[element.leng
     <p class="r d4" style="font-size:.68rem;color:rgba(255,255,255,.45);margin-top:18px;">Private appointments. Thoughtfully planned. No obligation to proceed.</p>
   </div>
 </section>
+</main>
 
 <footer class="foot-minimal r">
   <img class="foot-logo" src="https://static.wixstatic.com/media/e3b82d_5921d7d9eaaf4f6a97e1a12b94e8847c~mv2.png/v1/fill/w_214,h_58,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Cabinets-and-Me-logo-NO-Background.png" alt="Cabinets &amp; Me">
@@ -925,6 +971,7 @@ function closeMobDrawer(){
   mobBtn.setAttribute('aria-expanded','false');
   mobBtn.setAttribute('aria-label','Open menu');
   mobDrawer.setAttribute('aria-hidden','true');
+  mobDrawer.inert=true;
   mobBtnIcon.innerHTML=ICON_MENU;
 }
 mobBtn.addEventListener('click',()=>{
@@ -933,6 +980,11 @@ mobBtn.addEventListener('click',()=>{
   mobBtn.setAttribute('aria-expanded',open?'true':'false');
   mobBtn.setAttribute('aria-label',open?'Close menu':'Open menu');
   mobDrawer.setAttribute('aria-hidden',open?'false':'true');
+  // `inert` (not just aria-hidden) is required while closed, otherwise the
+  // drawer's links/button stay focusable via keyboard even though they're
+  // invisible/pointer-events:none — an invalid accessibility-tree state
+  // (Lighthouse's "agent-accessibility-tree" / aria-hidden-focus audits).
+  mobDrawer.inert=!open;
   mobBtnIcon.innerHTML=open?ICON_CLOSE:ICON_MENU;
 });
 mobDrawer.querySelectorAll('a,button').forEach(el=>el.addEventListener('click',closeMobDrawer));
@@ -1065,7 +1117,20 @@ async function sub(e,id){
       _redirect();
     }
   }
-  if(typeof orbyo!=='undefined'){
+  // The Orbyo lead-submission script now loads on window 'load' rather than
+  // as a static <script> tag, so if someone submits before it's finished
+  // loading, wait briefly for it rather than silently skipping the CRM
+  // submission. See KT.md §20.
+  const _orbyoReady=await new Promise(function(resolve){
+    if(typeof orbyo!=='undefined'){resolve(true);return;}
+    let _waited=0;const _step=150,_maxWait=5000;
+    const _timer=setInterval(function(){
+      _waited+=_step;
+      if(typeof orbyo!=='undefined'){clearInterval(_timer);resolve(true);}
+      else if(_waited>=_maxWait){clearInterval(_timer);resolve(false);}
+    },_step);
+  });
+  if(_orbyoReady){
     try{
       const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
       if(!access_token) throw new Error('Failed to get token from Vercel API');
@@ -1105,6 +1170,25 @@ async function sub(e,id){
   var _st=document.querySelector('#studio a.btn-outline');if(_st)_st.href=_u;
 })();
 </script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script><script type="text/javascript" src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
+<script>
+// jQuery + the Orbyo lead-submission API are only needed once a visitor
+// actually submits the form, well after the page has loaded, so they're
+// fetched after window 'load' instead of blocking as static <script> tags.
+// Unlike the analytics scripts above, this loader is NOT staggered via
+// _loadOnIdle — it gates whether a lead actually reaches the CRM, so it
+// fires as soon as possible. sub() above waits for it if a visitor submits
+// before it's finished loading. See KT.md §20.
+window.addEventListener('load', function(){
+  var jq = document.createElement('script');
+  jq.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+  jq.onload = function(){
+    var ol = document.createElement('script');
+    ol.type = 'text/javascript';
+    ol.src = 'https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js';
+    document.body.appendChild(ol);
+  };
+  document.body.appendChild(jq);
+});
+</script>
 </body>
 </html>
