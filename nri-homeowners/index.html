@@ -58,7 +58,19 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet"></noscript>
-<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1422274186613862');fbq('track','PageView');</script>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+// The pixel script itself (and its init/PageView call) is fetched after window
+// 'load' rather than blocking initial parse, same deferred pattern used for
+// GTM above: fbq() calls queue harmlessly on the stub until fbevents.js loads.
+window.addEventListener('load', function(){
+  var t=document.createElement('script');
+  t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
+  var s=document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(t,s);
+  fbq('init','1422274186613862');fbq('track','PageView');
+});
+</script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1422274186613862&ev=PageView&noscript=1"/></noscript>
 <style>
 /* ── TOKENS ─────────────────────────────────────────── */
@@ -97,6 +109,10 @@ a{text-decoration:none;color:inherit;}
 .r{opacity:0;transform:translateY(26px) scale(.975);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.40s}
+/* Hero content is above the fold and includes the LCP element: it must paint
+   at full opacity immediately (opacity:0 elements are never valid LCP
+   candidates), so it keeps the slide-up motion but drops the opacity dip. */
+#hero .r{opacity:1;}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
@@ -316,7 +332,7 @@ document.head.appendChild(loader);
 
 <div id="mosaic">
   <div class="mos-large">
-    <picture><source srcset="/nri-homeowners/Kitchen_Cabinets_2_1-1.webp" type="image/webp"><img src="/nri-homeowners/Kitchen_Cabinets_2_1-1.png" alt="Walnut Kitchen Cabinetry, Bengaluru Apartment" width="1200" height="1200" loading="lazy" decoding="async"></picture>
+    <picture><source srcset="/nri-homeowners/Kitchen_Cabinets_2_1-1_700.webp 700w, /nri-homeowners/Kitchen_Cabinets_2_1-1.webp 1200w" sizes="(max-width:1080px) 100vw, 60vw" type="image/webp"><img src="/nri-homeowners/Kitchen_Cabinets_2_1-1.png" alt="Walnut Kitchen Cabinetry, Bengaluru Apartment" width="1200" height="1200" loading="lazy" decoding="async"></picture>
     <div class="mos-cap"><div class="mos-name">A Bengaluru Apartment</div><div class="mos-tag">Kitchen · Wardrobes · Living Areas</div></div>
   </div>
   <div class="mos-small">
