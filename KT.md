@@ -280,6 +280,16 @@ cabinetsandme.com/
   - **Every `<img>` on this LP now has explicit `width`/`height`** (and `decoding="async"` on non-hero images) matching each file's real intrinsic pixel dimensions — purely for CLS/layout-reservation purposes; the CSS `object-fit`/`aspect-ratio` rules that actually control rendered size are untouched, so this has zero visual effect.
   - **Not done, and why:** didn't touch the non-functional hamburger menu (Known Issues §16 #1) or the gold-on-white contrast concern (§16 #19) — both are real issues but out of scope for a perf-only pass (fixing contrast would mean changing a colour, which was explicitly off-limits; fixing the hamburger is a functional/UX change, not a performance one).
 
+- **Second performance pass (2026-07-23/24) — PSI mobile score went 64 → 79 (local Lighthouse verification) → 96 mobile / 95 desktop (live PSI, per client).** Where the previous pass (above) covered structural/loading changes (picture elements, lazy backgrounds, CSS splitting), this pass targeted what PSI's Lighthouse audit actually flagged as remaining, verified against a real local Lighthouse run (the PSI API itself was rate-limited/quota-blocked at the time, `npx lighthouse` against the live URL was used instead). Full reusable method in **§20 — apply this before repeating any of it on the other 6 LPs.**
+  - **Root cause of the low score: the hero headline (`.hero-sub`) was the actual LCP element, and it was opacity-gated behind the `.r` scroll-reveal fade-in** — confirmed via Lighthouse's `lcp-breakdown-insight` audit, which showed ~1.7s of pure "element render delay" before it painted. `#hero .r{opacity:1;}` was added (higher specificity than the base `.r{opacity:0;...}` rule) so hero content keeps its slide-up motion but paints at full opacity immediately — opacity:0 elements are never valid LCP candidates, so gating any above-the-fold LCP candidate behind a fade-in directly taxes LCP. Cut element render delay to ~210ms in local testing.
+  - **Facebook Pixel's `fbevents.js` was still a synchronous `<head>` script** (unlike GTM, which was already deferred in the prior pass) — moved to the same `window.load`-deferred pattern, since `fbq()` calls already queue harmlessly on the stub (`n.queue.push(arguments)`) until the real script loads, so nothing is lost by delaying when it fetches.
+  - **13 webp images were re-encoded with `cwebp -q 65–72 -m 6 -af`** (method 6 + auto-filter, not just a lower quality number) after finding the existing files compressed 50–70% worse than necessary for identical visual quality at their actual display size — e.g. `Bathroom_Cabinets_9-16.webp` went 294KB → 103KB, `Kitchen_Cabinets_3_1-1.webp` went 252KB → 67KB. Verified with side-by-side crops at 100% zoom before committing, not just file-size deltas. ~700KB saved total. **A `Kitchen_Cabinets_2_1-1_700.webp` variant was also added** with a `srcset`/`sizes` pair on just the `#mosaic` usage of that file (not the portfolio-gallery usage, which still needs the full 1200px version) — Lighthouse's `image-delivery-insight` had flagged that specific instance as serving a 1200×1200 file into a ~412px mobile slot.
+  - **`vercel.json`'s static-asset `Cache-Control` bumped from `max-age=3600` (1hr) to `max-age=604800` (7 days), `stale-while-revalidate=86400` kept as-is.** This file is shared across every LP in the repo (not just `nri-homeowners`), so this change already applies everywhere — nothing to repeat per-LP. HTML responses are unaffected (`no-cache, no-store, must-revalidate` untouched).
+  - **⚠️ Tried and reverted: self-hosting the nav/footer logo + 5 press-bar logos, again.** Wired `/nri-homeowners/cabinets-and-me-logo.{png,webp}` and the 5 local `press-*` files back into `<head>`/nav/footer/press-bar (the exact same files added in the first pass's Wix→local migration, which were still sitting in the folder unused after the revert documented above). Ruled out Windows `autocrlf` binary corruption as the cause of the original 404s by staging the files and comparing git blob size to on-disk size (byte-identical, no corruption occurs on this checkout). Could not confirm the actual root cause without watching a live Vercel deploy, and given this exact change has already broken production once, backed it out again before pushing rather than re-risk it blind. **If this is ever retried:** do it via a Vercel preview deployment first, confirm the images actually resolve in that preview, and only then promote to production — don't push straight to `master` and hope.
+  - **Third pass, same session (2026-07-24) — Total Blocking Time was swinging the PSI score between the mid-80s and mid-90s run to run.** Diagnosed as GTM, the Meta Pixel, and the Orbyo Intel widget all firing on the exact same `window.load` tick and piling onto the main thread together — how badly they overlapped depended on third-party network timing (Google's/Facebook's/Orbyo's server response times on that particular run), which is inherently noisy and mostly outside this codebase's control. Fixed by giving each one its own `requestIdleCallback` (with a `setTimeout` fallback for browsers without it, e.g. Safari) at staggered timeouts (800ms / 1600ms / 2400ms) via a shared `window._loadOnIdle(fn, timeout)` helper defined once in the GTM block. Verified with 3 repeated local Lighthouse runs before/after: TBT spread went from 270–763ms (score 80–93) to 297–537ms (score 86–92) — same ballpark average, roughly half the variance.
+    - **The jQuery + Orbyo lead-submission loader is deliberately NOT staggered** — unlike GTM/Pixel/Orbyo-Intel, this one gates whether a lead actually reaches the CRM, so it still fires immediately on `window.load` with no added delay.
+    - **Found and fixed a real pre-existing data-loss gap while auditing this:** `sub()`'s fallback was a flat `if(typeof orbyo!=='undefined'){...} else {_showSuccess()}` — if a visitor submitted the form before the deferred Orbyo script had finished loading, the code silently skipped the CRM submission entirely and just showed the success redirect. No error, no retry, lead just never arrives anywhere. `sub()` now `await`s a up-to-5-second poll (150ms interval) for `orbyo` to become defined before giving up. This risk only exists on pages that defer-load jQuery/Orbyo off a static `<script src>` tag (as `nri-homeowners` now does) — the other 6 LPs still load these synchronously at the bottom of `<body>` (§7), so they don't have this race today, but **if you ever apply the deferred-loading pattern to another LP, you must bring this fix with it** — don't defer the loader without also adding the wait.
+
 ---
 
 ### Thank-You Pages (7 pages total — identical structure, different quote/WA message)
@@ -510,7 +520,7 @@ TY pages have 2 `@keyframe` animations:
 <script src="https://www.orbyo.com/orbyolean/resources/plugins/olApiV2.min.js"></script>
 ```
 
-jQuery is loaded but **not used** in any custom code. It appears to be a dependency of the Orbyo `olApiV2` plugin.
+jQuery is not called anywhere in this codebase's own custom code, but **it is a real, load-bearing dependency, not dead weight** — `olApiV2.min.js` (the Orbyo lead-submission plugin) calls `jQuery.ajax(...)` directly and will throw if `jQuery`/`$` isn't already defined in global scope when it runs. Confirmed by fetching and reading `olApiV2.min.js`'s source on 2026-07-24 — do not remove or further defer this script without keeping jQuery loaded first; see the `nri-homeowners` perf-pass entry above for what happens if you get the ordering/timing wrong.
 
 ### External Library (loaded in `<head>` of all pages)
 
@@ -518,7 +528,7 @@ jQuery is loaded but **not used** in any custom code. It appears to be a depende
 <script src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js"></script>
 ```
 
-This pre-loads Orbyo intelligence tracking before the DOM. Required for lead attribution.
+This pre-loads Orbyo intelligence tracking before the DOM. Required for lead attribution. **On `nri-homeowners` specifically (2026-07-23/24 perf pass), this is no longer a blocking `<head>` script** — it's deferred to `window.load` and further staggered via `requestIdleCallback` alongside GTM and the Meta Pixel. See §20 for the full pattern before replicating it elsewhere.
 
 ### Inline Script Blocks — LP Pages
 
@@ -1111,12 +1121,12 @@ Every LP page depends on (in order of loading):
 ### Code Quality
 10. **Massive CSS duplication** — The entire CSS block (~350 lines) is copy-pasted across all 6 LP files. Any design change must be replicated 6 times manually. **`nri-homeowners` no longer matches this pattern exactly** since 2026-07-23 — its non-critical CSS now lives in its own `styles.css` file rather than being fully inline; if a shared design change needs to reach that LP too, remember to check both its inline `<style>` block AND `nri-homeowners/styles.css`, not just the inline block like every other LP.
 11. **JavaScript duplication** — All JS (~180 lines) is copy-pasted across all 6 LP files. Same risk.
-12. **jQuery loaded but unused** — Adds ~90KB for no benefit. Likely a legacy dependency of Orbyo's `olApiV2`.
+12. ~~**jQuery loaded but unused**~~ — **Corrected 2026-07-24: this was wrong.** `olApiV2.min.js` (confirmed by reading its actual source) calls `jQuery.ajax(...)` directly — jQuery is a hard dependency of Orbyo's lead-submission plugin, not dead weight. Don't remove it. It's still ~90KB, but that cost is real, not incidental.
 13. **`--teal-light: #EAF4F6` defined in tokens but `--teal-xl: #F4FAFB` is used everywhere** — `--teal-light` appears unused in practice.
 
 ### Images
 14. **Two LPs share the same hero background image** — `lp-villa-recent-possession` and `lp-apartment-owners` both use `e3b82d_d941e44ab97e423ca07a205b5e9a4e41~mv2.jpg`. If these are ever shown side by side in an ad campaign they'll look identical.
-15. **All images on Wixstatic CDN** — External dependency. No control over availability or AVIF support.
+15. **All images on Wixstatic CDN** — External dependency. No control over availability or AVIF support. **`nri-homeowners` has localized every image except the nav/footer logo and the 5 press-bar logos**, which were deliberately migrated back to Wix hosting after a local-hosting attempt caused live 404s — see the perf-pass entry above and §20 before repeating that specific migration.
 
 ### Accessibility
 16. **No `lang` attribute issue** — `lang="en"` is correctly set ✓
@@ -1259,6 +1269,50 @@ Instructions for any AI assistant working on this project:
 | Add a new URL param to tracking | All 6 LP `index.html` | URL param IIFE + `custom_values` object in `sub()` |
 | View all LP URLs | `index.html` | Root index page (internal only) |
 | Check Vercel routing config | `vercel.json` | Root directory |
+
+---
+
+## 20. Performance Optimization Playbook (nri-homeowners → other LPs)
+
+Everything below was done to `nri-homeowners` across two sessions (2026-07-22/23, then 2026-07-23/24) and took it from a PSI mobile score of 64 to 96 mobile / 95 desktop. None of the other 6 LPs (`lp-villa-kitchen`, `lp-villa-wardrobes`, `lp-villa-renovation`, `lp-villa-under-construction`, `lp-villa-recent-possession`, `lp-apartment-owners`) or `lp-apartments-meta-01` have had this pass applied yet. This section is the reusable checklist — read the full narrative in the `nri-homeowners` entry in §4 first if anything here is unclear, that's where the reasoning and the "why" live.
+
+**Before touching anything: measure first.** Don't guess at what's slow — run a real Lighthouse pass (`npx lighthouse "<url>" --only-categories=performance --preset=perf --form-factor=mobile --screenEmulation.mobile --throttling-method=simulate --output=json`) against the live page, or use PSI directly if it isn't rate-limited, and read the actual `lcp-breakdown-insight`, `bootup-time`, `image-delivery-insight`, and `cache-insight` audit details before deciding what to change. The specific fixes below happened to be what `nri-homeowners` needed; another LP's bottleneck could be different.
+
+### 1. Fix LCP render delay caused by the scroll-reveal fade-in
+Every LP uses the same `.r{opacity:0;transform:translateY(26px) scale(.975);...}` / `.r.in{opacity:1;transform:none;}` scroll-reveal pattern (§6). If the hero's headline or subheadline (whichever Lighthouse's `lcp-breakdown-insight` names as the LCP element) carries an `.r`/`.d1`–`.d5` class, it is opacity-gated behind that fade — and an `opacity:0` element is never a valid LCP candidate, so the fade-in directly delays LCP by however long the JS takes to add `.in` plus however long the CSS transition takes to run. Fix: add `#hero .r{opacity:1;}` (higher specificity than the base `.r` rule, so no need to touch the base rule or the JS) so hero content keeps the slide-up motion but paints at full opacity immediately. Confirm which element is actually the LCP node per-LP before assuming it's the same one — don't just copy the nri-homeowners selector blind.
+
+### 2. Defer every third-party script off the initial render, then stagger them
+Pattern (see `nri-homeowners`'s `<head>` for the working code):
+- GTM (`gtag.js`), the Meta Pixel (`fbevents.js`), and the Orbyo Intel widget (`orbyoIntel.min.js`) each already have a lightweight "stub" that queues calls (`dataLayer.push`, `fbq`'s `n.queue.push`) until the real script loads — so it's safe to fetch the real script only after `window.load`, not before.
+- Once deferred, stagger them with a shared helper instead of letting all `window.addEventListener('load', ...)` callbacks fire in the same tick (that pileup is what causes Total Blocking Time to swing between runs — see the nri-homeowners §4 entry's "Third pass" note for the measured before/after):
+  ```js
+  window._loadOnIdle = function(fn, timeout){
+    if('requestIdleCallback' in window){ requestIdleCallback(fn, {timeout: timeout}); }
+    else { setTimeout(fn, timeout); }
+  };
+  ```
+  Wrap each script's injection in `_loadOnIdle(fn, N)` with increasing `N` (nri-homeowners uses 800/1600/2400ms for GTM/Pixel/Orbyo-Intel respectively) instead of firing all three unstaggered.
+- **Do not apply this staggering to the jQuery + `olApiV2.min.js` (Orbyo lead-submission) loader.** That one has to be ready as soon as possible since it gates whether a lead reaches the CRM at all — see item 3.
+
+### 3. If you defer jQuery + Orbyo's lead-submission script, you MUST also patch `sub()`
+The other 6 LPs currently load `jquery-3.7.1.min.js` and `olApiV2.min.js` as static, synchronous `<script src>` tags at the bottom of `<body>` (§7) — by the time a real visitor finishes filling out the form, they're already loaded, so this isn't a problem *today*. But if you move them to a `window.load`-deferred pattern (for the performance win — this is currently ~90KB+ of blocking script at the very bottom of every page), you introduce a race: someone who submits very fast could hit `sub()` before `orbyo` is defined. Every LP's `sub()` has the same `if(typeof orbyo!=='undefined'){...}else{_showSuccess()}` fallback (§7), and the `else` branch silently skips the actual CRM submission — the visitor still sees success and gets redirected, but the lead never arrives at Orbyo. `nri-homeowners`'s current `sub()` has the fix: it `await`s up to 5 seconds (150ms polling interval) for `orbyo` to become defined before falling back. Port that same wait, not just the deferred script tags, to any LP where you defer this loader.
+
+### 4. Recompress images with `cwebp -m 6 -af`, not just a lower `-q`
+`cwebp` is installed at `C:\Program Files\libwebp\bin\cwebp`. The prior nri-homeowners webp conversions (done at `-q 92 -m 6`, §4) were still 50–70% larger than necessary — method `6` (best compression search) plus `-af` (auto-filter) at a lower quality (`-q 65` to `-q 72` worked well for these photos) produced files 2–3x smaller with no visible difference. **Always visually spot-check a few re-encodes at 100% zoom side-by-side before committing** (see the memory note on full-page visual verification) — don't trust file-size deltas alone. If any other LP has local images (most don't yet — see §16 #15), or if any are migrated to local per item 5 below, run them through this same recompression.
+
+### 5. ⚠️ Do NOT self-host the nav/footer logo or the 5 "Featured on" press logos
+This has been tried and reverted twice on `nri-homeowners` — see §4's `nri-homeowners` entry (both the original revert commit and the second attempt's rollback). Self-hosting them removes a `static.wixstatic.com` dependency (a real, legitimate perf win in theory) but caused live 404s in production once, for a reason that was never conclusively diagnosed (Windows `autocrlf` binary corruption was tested for and ruled out on 2026-07-24 — blob size matches disk size byte-for-byte). **If this is ever attempted on any LP, do it via a Vercel preview deployment first and confirm the images actually resolve there before promoting to production.** Every other local image swap on `nri-homeowners` (hero, mosaic, materials, portfolio, studio background) has worked fine — it's specifically this one migration that's bitten twice.
+
+### 6. Cache headers are already global — nothing to repeat here
+`vercel.json`'s static-asset `Cache-Control` was bumped from 1 hour to 7 days (`max-age=604800, stale-while-revalidate=86400`) on 2026-07-23/24. This file has no per-page routing, so it already applies to every LP in the repo. Don't add a per-LP override unless a specific page needs different caching behaviour.
+
+### 7. Split inline CSS into critical (`<head>`) vs. deferred (`styles.css`) — bigger lift, judge per-LP
+`nri-homeowners` is the only LP with its own `styles.css` (§4, §6, Known Issues #10) — everything above the fold (`:root` tokens, reset, `.r`/`.d1`-`.d5`, nav, hero, hero-form) stayed inline; everything else moved to an external stylesheet loaded via the `media="print" onload="this.media='all'"` swap trick (same technique already used for the Google Fonts stylesheet). This is a bigger structural change than the others above — worth doing if a full pass is warranted, but don't do it as a drive-by since it changes where future CSS edits need to go (Known Issues #10 already flags the resulting "check two places" risk).
+
+### What NOT to do
+- Don't touch copy, layout, colour, spacing, or the animation *look* of anything — every pass on `nri-homeowners` was implementation-only, verified with a before/after visual check (§4). Performance work and design work are separate asks; don't blur them.
+- Don't remove jQuery thinking it's unused — it isn't (§7, Known Issues #12).
+- Don't assume the LCP element is the hero image — on `nri-homeowners` it turned out to be the hero *text*, gated by the reveal animation, not the background photo. Check per-LP.
 
 ---
 
