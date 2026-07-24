@@ -11,11 +11,24 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-ETE07PL3RP');
+  // Shared helper so the post-load third-party scripts (GTM, FB pixel, Orbyo
+  // Intel widget) don't all pile onto the main thread in the same tick: each
+  // schedules itself independently via requestIdleCallback (falling back to
+  // setTimeout on browsers without it, e.g. Safari), staggered by `timeout`.
+  // None of these calls carry page data themselves (gtag/fbq queue their
+  // arguments until the real script loads), so delaying *when* the script
+  // fetches doesn't drop or reorder any events.
+  window._loadOnIdle = function(fn, timeout){
+    if('requestIdleCallback' in window){ requestIdleCallback(fn, {timeout: timeout}); }
+    else { setTimeout(fn, timeout); }
+  };
   window.addEventListener('load', function(){
-    var gtmScript = document.createElement('script');
-    gtmScript.async = true;
-    gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP';
-    document.head.appendChild(gtmScript);
+    _loadOnIdle(function(){
+      var gtmScript = document.createElement('script');
+      gtmScript.async = true;
+      gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-ETE07PL3RP';
+      document.head.appendChild(gtmScript);
+    }, 800);
   });
 </script>
 <link rel="preload" as="image" fetchpriority="high" href="/nri-homeowners/kitchen_1-1_16-9.webp" type="image/webp">
@@ -63,12 +76,16 @@
 // The pixel script itself (and its init/PageView call) is fetched after window
 // 'load' rather than blocking initial parse, same deferred pattern used for
 // GTM above: fbq() calls queue harmlessly on the stub until fbevents.js loads.
+// Staggered slightly after GTM (see _loadOnIdle above) so the two don't fetch
+// and execute in the same tick; the PageView event still fires, just a beat later.
 window.addEventListener('load', function(){
-  var t=document.createElement('script');
-  t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
-  var s=document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(t,s);
-  fbq('init','1422274186613862');fbq('track','PageView');
+  _loadOnIdle(function(){
+    var t=document.createElement('script');
+    t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
+    var s=document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t,s);
+    fbq('init','1422274186613862');fbq('track','PageView');
+  }, 1600);
 });
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1422274186613862&ev=PageView&noscript=1"/></noscript>
@@ -207,6 +224,7 @@ h1.hero-title em{font-style:italic;color:var(--teal-mid);}
 <body>
 <script type="text/javascript">//<![CDATA[
 window.addEventListener('load', function(){
+_loadOnIdle(function(){
 var loader=document.createElement('script');
 loader.src="https://www.orbyo.com/resources/widgets/orbyoIntel.min.js";
 loader.onload=function(){
@@ -217,6 +235,7 @@ try{"undefined"!=typeof orbyoIntel&&"function"==typeof orbyoIntel.init?iframe.on
 var element=document.getElementsByTagName("script");element=element[element.length-1],element.parentNode.insertBefore(iframe,element);
 };
 document.head.appendChild(loader);
+}, 2400);
 });
 //]]></script>
 
@@ -959,7 +978,21 @@ async function sub(e,id){
     btn.textContent='Submitted ✓';btn.style.background='#2e7d52';
     window.location.href='/nri-homeowners/thank-you?wa='+encodeURIComponent(_pendingWaUrl);
   }
-  if(typeof orbyo!=='undefined'){
+  // The Orbyo lead-submission script loads on window 'load' (unstaggered,
+  // unlike the analytics scripts above, since this one gates actually
+  // getting the lead into the CRM). If someone submits the form before it's
+  // finished loading, wait briefly for it rather than silently skipping the
+  // CRM submission and only showing the success redirect.
+  const _orbyoReady=await new Promise(function(resolve){
+    if(typeof orbyo!=='undefined'){resolve(true);return;}
+    let _waited=0;const _step=150,_maxWait=5000;
+    const _timer=setInterval(function(){
+      _waited+=_step;
+      if(typeof orbyo!=='undefined'){clearInterval(_timer);resolve(true);}
+      else if(_waited>=_maxWait){clearInterval(_timer);resolve(false);}
+    },_step);
+  });
+  if(_orbyoReady){
     try{
       const access_token=_cachedToken||(await (await fetch('/api/getOrbyoToken')).json()).token;
       if(!access_token) throw new Error('Failed to get token from Vercel API');
